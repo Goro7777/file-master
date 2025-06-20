@@ -1,0 +1,116 @@
+<%- include('../partials/header', { title: "Sign-up" }) %>
+<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+    <div class="card bg-success text-white rounded-4">
+        <form action="/sign-up" method="POST" class="card-body p-5 text-center">
+            <div class="mb-md-1 mt-md-1 pb-5">
+                <h2 class="fw-bold mb-2 text-uppercase">Sign-up</h2>
+                <p class="text-white-50 mb-5">Please enter your data!</p>
+
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.username %>"
+                        required
+                    />
+                    <% if (locals.errors?.username) { %>
+                    <div class="text-warning"><%= errors.username %></div>
+                    <% } %>
+                </div>
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="firstname">First name</label>
+                    <input
+                        type="text"
+                        id="firstname"
+                        name="firstname"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.firstname  %>"
+                        required
+                    />
+                    <% if (locals.errors?.firstname) { %>
+                    <div class="text-warning"><%= errors.firstname %></div>
+                    <% } %>
+                </div>
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="lastname">Last name</label>
+                    <input
+                        type="text"
+                        id="lastname"
+                        name="lastname"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.lastname  %>"
+                        required
+                    />
+                    <% if (locals.errors?.lastname) { %>
+                    <div class="text-warning"><%= errors.lastname %></div>
+                    <% } %>
+                </div>
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.email  %>"
+                        required
+                    />
+                    <% if (locals.errors?.email) { %>
+                    <div class="text-warning"><%= errors.email %></div>
+                    <% } %>
+                </div>
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.password  %>"
+                        required
+                    />
+                    <% if (locals.errors?.password) { %>
+                    <div class="text-warning"><%= errors.password %></div>
+                    <% } %>
+                </div>
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="confirmPassword"
+                        >Confirm password</label
+                    >
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.confirmPassword  %>"
+                        required
+                    />
+                    <% if (locals.errors?.confirmPassword) { %>
+                    <div class="text-warning">
+                        <%= errors.confirmPassword %>
+                    </div>
+                    <% } %>
+                </div>
+
+                <button
+                    data-mdb-button-init
+                    data-mdb-ripple-init
+                    class="btn btn-outline-light btn-lg px-5"
+                    type="submit"
+                >
+                    Sign up
+                </button>
+            </div>
+
+            <div>
+                <p class="mb-0">
+                    Already have an account?
+                    <a href="/login" class="text-white-50 fw-bold">Log In</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

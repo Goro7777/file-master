@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <title><%= title %></title>
+    </head>
+    <body>
+        <!-- navbar -->
+        <ul class="nav sticky-top justify-content-end bg-success-subtle gap-4 py-2 pe-5">
+            <li class="nav-item d-flex align-items-center me-auto py-2 ps-5">
+                <strong
+                    ><a class="navbar-brand text-success fs-3" href="/"
+                        >Clubhouse</a
+                    ></strong
+                >
+            </li>
+            <% if (locals.user) { %>
+            <li class="nav-item d-flex align-items-center">
+                <a class="btn btn-danger" href="/logout">Log out</a>
+            </li>
+            <li class="nav-item d-flex align-items-center">
+                <a class="btn btn-outline-success" href="/profile/<%= user.userid %>"
+                    ><strong><%= locals.user.username[0].toUpperCase() %></strong></a
+                >
+            </li>
+            <% } else { %>
+            <li class="nav-item d-flex align-items-center">
+                <a class="btn btn-success" href="/login">Log in</a>
+            </li>
+            <li class="nav-item d-flex align-items-center">
+                <a class="btn btn-success" href="/sign-up">Sign up</a>
+            </li>
+            <% } %>
+        </ul>
+        <div class="container py-5 h-100"> 
+            <div class="row d-flex justify-content-center align-items-center h-100">
+    </body>
+</html>

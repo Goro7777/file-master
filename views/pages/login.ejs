@@ -1,0 +1,59 @@
+<%- include('../partials/header', { title: "Login" }) %>
+<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+    <div class="card bg-success text-white rounded-4">
+        <form action="/login" method="POST" class="card-body p-5 text-center">
+            <div class="mb-md-1 mt-md-1 pb-5">
+                <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                <p class="text-white-50 mb-5">
+                    Please enter your username and password!
+                </p>
+
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.username  %>"
+                        required
+                    />
+                    <% if (locals.errors?.username) { %>
+                    <div class="text-warning"><%= errors.username %></div>
+                    <% } %>
+                </div>
+
+                <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <label class="form-label" for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control form-control-lg"
+                        value="<%= locals.values?.password  %>"
+                        required
+                    />
+                    <% if (locals.errors?.password) { %>
+                    <div class="text-warning"><%= errors.password %></div>
+                    <% } %>
+                </div>
+
+                <button
+                    data-mdb-button-init
+                    data-mdb-ripple-init
+                    class="btn btn-outline-light btn-lg px-5"
+                    type="submit"
+                >
+                    Log in
+                </button>
+            </div>
+
+            <div>
+                <p class="mb-0">
+                    Don't have an account?
+                    <a href="/sign-up" class="text-white-50 fw-bold">Sign Up</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

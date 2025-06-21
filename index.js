@@ -21,6 +21,16 @@ app.use(
         path.join(__dirname, "node_modules", "bootstrap", "dist", "css")
     )
 );
+app.use(
+    "/bootstrap-icons",
+    express.static(path.join(__dirname, "node_modules", "bootstrap-icons"))
+);
+app.use(
+    "/js",
+    express.static(
+        path.join(__dirname, "node_modules", "bootstrap", "dist", "js")
+    )
+);
 
 app.use(
     expressSession({

@@ -4,34 +4,86 @@ const { validateSignup } = require("../validation/validation");
 const passport = require("passport");
 const db = require("../db/queries");
 
-const folder = {
-    name: "Folder A",
-    files: ["File A", "File B", "sFile C"],
-    folders: [
-        {
-            name: "Folder B",
-            files: ["File D", "File E"],
-            folders: [],
-        },
-        {
-            name: "Folder C",
-            files: ["File F"],
-            folders: [
-                {
-                    name: "Folder D",
-                    files: ["File G", "File H"],
-                    folders: [],
-                },
-            ],
-        },
-    ],
-};
+const folders = [
+    {
+        id: 1,
+        name: "Folder A",
+        files: [
+            { name: "File A", id: 100 },
+            { name: "File B", id: 101 },
+            { name: "File C", id: 102 },
+        ],
+        folders: [
+            {
+                id: 2,
+                name: "Folder B",
+                files: [
+                    { name: "File D", id: 103 },
+                    { name: "File E", id: 104 },
+                ],
+                folders: [],
+            },
+            {
+                id: 3,
+                name: "Folder C",
+                files: [{ name: "File F", id: 107 }],
+                folders: [
+                    {
+                        id: 4,
+                        name: "Folder D",
+                        files: [
+                            { name: "File G", id: 105 },
+                            { name: "File H", id: 106 },
+                        ],
+                        folders: [],
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: 5,
+        name: "Folder A",
+        files: [
+            { name: "File A", id: 108 },
+            { name: "File B", id: 109 },
+            { name: "File C", id: 110 },
+        ],
+        folders: [
+            {
+                id: 6,
+                name: "Folder B",
+                files: [
+                    { name: "File D", id: 111 },
+                    { name: "File E", id: 112 },
+                ],
+                folders: [],
+            },
+            {
+                id: 7,
+                name: "Folder C",
+                files: [{ name: "File F", id: 113 }],
+                folders: [
+                    {
+                        id: 8,
+                        name: "Folder D",
+                        files: [
+                            { name: "File G", id: 114 },
+                            { name: "File H", id: 115 },
+                        ],
+                        folders: [],
+                    },
+                ],
+            },
+        ],
+    },
+];
 
 const allPostsGet = async (req, res) => {
     // let posts = await db.getAllPosts();
     console.log("providing folders to view");
     res.render("pages/index", {
-        folder,
+        folders,
     });
 };
 

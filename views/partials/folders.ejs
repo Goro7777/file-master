@@ -1,0 +1,32 @@
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    <% for (let folder of folders) { %>
+    <div class="accordion-item border border-0">
+        <h2 class="accordion-header">
+            <button
+                class="accordion-button py-1 rounded-0 ps-3"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne<%= folder.id %>"
+                aria-expanded="true"
+                aria-controls="panelsStayOpen-collapseOne<%= folder.id %>"
+            >
+                <i class="bi bi-folder"></i>&nbsp&nbsp<%= folder.name %>
+            </button>
+        </h2>
+        <div
+            id="panelsStayOpen-collapseOne<%= folder.id %>"
+            class="accordion-collapse collapse show m-0 p-0"
+        >
+            <div class="accordion-body py-0 pe-0">
+                <% if (folder.folders.length > 0) { %> <%- include('./folders',
+                { folders: folder.folders }) %> <% } %> <% for (let file of
+                folder.files) { %>
+                <div class="ps-3 py-1">
+                    <i class="bi bi-file-earmark"></i>&nbsp&nbsp<%= file.name %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</div>

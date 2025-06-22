@@ -24,3 +24,23 @@ model User {
   password  String
   joinedAt  DateTime @default(now())
 }
+
+model Folder {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  files       File[]
+  parentId    String?
+  parent      Folder?  @relation("ParentChildren", fields: [parentId], references: [id])
+  children    Folder[] @relation("ParentChildren")
+}
+
+model File {
+  id       String   @id @default(uuid())
+  name     String
+  size     Float
+  uploaded DateTime @default(now())
+  Folder   Folder?  @relation(fields: [folderId], references: [id])
+  folderId String?
+}

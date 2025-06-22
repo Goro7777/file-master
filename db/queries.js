@@ -1,6 +1,9 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
+async function getAllUsers() {
+    return prisma.user.findMany();
+}
 //   username  String   @unique
 //   email     String   @unique
 //   firstname String
@@ -124,6 +127,7 @@ async function getUserByField(fieldName, fieldValue) {
 // }
 
 module.exports = {
+    getAllUsers,
     addUser,
     // getAllUsers,
     getUserByField,

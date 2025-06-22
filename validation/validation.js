@@ -43,20 +43,21 @@ const validateSignup = [
         }),
 ];
 
-const validatePost = [
-    body("title")
+const validateNewFolder = [
+    body("name")
         .trim()
         .not()
         .isEmpty()
-        .withMessage("Post title cannot be empty."),
-    body("text")
-        .trim()
-        .not()
-        .isEmpty()
-        .withMessage("Post text cannot be empty."),
+        .withMessage("Folder name cannot be empty.")
+        .custom(async (value) => {
+            // let usernameTaken = await db.getUserByField("username", value);
+            // if (usernameTaken) throw new Error("Username already in use");
+            console.log("check if folder name is valid");
+            return true;
+        }),
 ];
 
 module.exports = {
     validateSignup,
-    validatePost,
+    validateNewFolder,
 };

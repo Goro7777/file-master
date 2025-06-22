@@ -1,3 +1,5 @@
+const { validationResult } = require("express-validator");
+const { validateNewFolder } = require("../validation/validation");
 const bcrypt = require("bcryptjs");
 const db = require("../db/queries");
 
@@ -75,13 +77,74 @@ const folder = {
 //     ],
 // };
 
-const allPostsGet = async (req, res) => {
+const allFoldersGet = async (req, res) => {
     // let posts = await db.getAllPosts();
     console.log("providing folders to view");
     res.render("pages/index", {
         folder,
     });
 };
+
+const newFileGet = async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).render("pages/error", {
+            message: "401 Unauthorized: You are not logged in.",
+        });
+    }
+};
+
+const newFolderGet = async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).render("pages/error", {
+            message: "401 Unauthorized: You are not logged in.",
+        });
+    }
+
+    let { values, errors } = req.session.redirectData || {};
+    req.session.redirectData = null;
+    const { parentId } = req.params;
+
+    res.render("pages/newFolder", {
+        values,
+        errors,
+        parentId,
+    });
+};
+
+const newFolderPost = [
+    validateNewFolder,
+    async (req, res) => {
+        const { parentId } = req.params;
+        console.log("POST parentId: " + parentId);
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            errorValues = Object.fromEntries(
+                errors.errors.map((error) => [error.path, error.msg])
+            );
+            console.log(req.body);
+            req.session.redirectData = {
+                values: req.body,
+                errors: errorValues,
+            };
+            console.log(req.session.redirectData);
+            res.redirect(`/folders/${parentId}/new`);
+        } else {
+            // create a folder in db
+
+            return res.status(401).render("pages/error", {
+                message: "You've created a new folder.",
+            });
+            // let post = {
+            //     ...req.body,
+            //     userId: req.user.userid,
+            //     postedOn: new Date(),
+            // };
+            // await db.addPost(post);
+            // res.redirect("/");
+        }
+    },
+];
 
 // const profileGet = async (req, res) => {
 //     if (!req.isAuthenticated()) {
@@ -110,5 +173,8 @@ const allPostsGet = async (req, res) => {
 // };
 
 module.exports = {
-    allPostsGet,
+    allFoldersGet,
+    newFileGet,
+    newFolderGet,
+    newFolderPost,
 };

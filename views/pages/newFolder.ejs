@@ -1,0 +1,49 @@
+<%- include('../partials/header', { title: "Create a folder" }) %>
+<div class="col-12 col-md-11 col-lg-9 col-xl-7">
+    <h2 class="fw-bold mb-4 text-uppercase">
+        Create a <span class="text-warning">Folder</span>
+    </h2>
+
+    <form
+        class="card-body mb-4 ms-3"
+        action="/folders/<%= locals.parentId %>/new"
+        method="POST"
+    >
+        <div class="mb-md-1 mt-md-1 pb-5 pt-2">
+            <div data-mdb-input-init class="form-outline form-white mb-4">
+                <label class="form-label fs-5" for="name">Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="form-control form-control-lg border-success"
+                    value="<%= locals.values?.name %>"
+                />
+                <% if (locals.errors?.name) { %>
+                <div class="text-warning"><%= errors.name %></div>
+                <% } %>
+            </div>
+
+            <div data-mdb-input-init class="form-outline form-white mb-4">
+                <label class="form-label fs-5" for="description"
+                    >Description <i>(optional)</i></label
+                >
+                <textarea
+                    id="description"
+                    name="description"
+                    class="form-control border-success"
+                    rows="3"
+                >
+<%= locals.values?.description %></textarea
+                >
+                <% if (locals.errors?.description) { %>
+                <div class="text-warning"><%= errors.description %></div>
+                <% } %>
+            </div>
+
+            <button class="btn btn-outline-success btn-lg px-5" type="submit">
+                Create
+            </button>
+        </div>
+    </form>
+</div>

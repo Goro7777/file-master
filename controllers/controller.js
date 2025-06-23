@@ -2,7 +2,11 @@ const { validationResult } = require("express-validator");
 const { validateNewFolder } = require("../validation/validation");
 const bcrypt = require("bcryptjs");
 const db = require("../db/queries");
-const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
+const {
+    ROOT_FOLDER_ID,
+    ROOT_FOLDER_NAME,
+    ROOT_FOLDER_DESCRIPTION,
+} = require("../utils/constants");
 
 const folderGet = async (req, res) => {
     const { parentId } = req.params;
@@ -12,7 +16,9 @@ const folderGet = async (req, res) => {
     let map = {};
     if (parentId === ROOT_FOLDER_ID) {
         map[ROOT_FOLDER_ID] = {
+            id: ROOT_FOLDER_ID,
             name: ROOT_FOLDER_NAME,
+            description: ROOT_FOLDER_DESCRIPTION,
             isRoot: true,
             children: [],
         };

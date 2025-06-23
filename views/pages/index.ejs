@@ -1,13 +1,18 @@
 <%- include('../partials/header', { title: "Club House" }) %>
 <div class="col-12 col-md-11 col-lg-9 col-xl-7">
-    <h2 class="fw-bold mb-4 text-uppercase"><%= folders[key].name %></h2>
-
+    <h2 class="fw-bold mb-4 text-uppercase">
+        <i class="bi bi-folder2-open"></i>&nbsp<%= folders[key].name %>
+    </h2>
+    <p class="border-5 border-success-subtle border-bottom">
+        <%= folders[key].description %>
+    </p>
     <div class="d-flex justify-content-around mb-4">
         <a href="/folders/0/files/new" class="btn btn-primary">Upload a file</a>
         <a href="/folders/<%= key %>/new" class="btn btn-warning"
             ><i class="bi bi-folder-plus"></i>&nbsp&nbspCreate a folder</a
         >
     </div>
+
     <%- include('../partials/folder') %>
 
     <!-- <form class="card-body mb-4 border-success p-3" action="/newPost">

@@ -2,31 +2,35 @@ const { validationResult } = require("express-validator");
 const { validateNewFolder } = require("../validation/validation");
 const bcrypt = require("bcryptjs");
 const db = require("../db/queries");
-
 const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
 
 const folderGet = async (req, res) => {
+    const { parentId } = req.params;
+    console.log("parentId: " + parentId);
     let folders = await db.getAllFolders();
 
-    let map = {
-        [ROOT_FOLDER_ID]: {
+    let map = {};
+    if (parentId === ROOT_FOLDER_ID) {
+        map[ROOT_FOLDER_ID] = {
             name: ROOT_FOLDER_NAME,
             isRoot: true,
             children: [],
-        },
-    };
+        };
+    }
 
     for (let folder of folders) {
         map[folder.id] = folder;
-        if (!folder.parentId) {
+        if (!folder.parentId && parentId === ROOT_FOLDER_ID) {
             map[ROOT_FOLDER_ID].children.push({ id: folder.id });
         }
     }
+
+    map[parentId].isRoot = true;
     // console.log(map);
 
     res.render("pages/index", {
         folders: map,
-        key: ROOT_FOLDER_ID,
+        key: parentId,
     });
 };
 

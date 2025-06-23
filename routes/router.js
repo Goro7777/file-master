@@ -5,7 +5,7 @@ const controller = require("../controllers/controller");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 
 router.get("/", (req, res) => res.redirect(`/folders/${ROOT_FOLDER_ID}`));
-router.get(`/folders/${ROOT_FOLDER_ID}`, controller.folderGet);
+router.get("/folders/:parentId", controller.folderGet);
 
 router.get("/login", authController.loginGet);
 router.post("/login", authController.loginPost);

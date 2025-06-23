@@ -61,11 +61,12 @@ async function addFolders() {
 }
 
 async function resetFunction() {
+    await prisma.user.deleteMany();
     await deleteAllFolders();
     // await addFolders();
 }
 
-resetFunction();
+// resetFunction();
 
 async function deleteAllFolders() {
     await prisma.folder.deleteMany();
@@ -133,13 +134,16 @@ async function getPathTo(id) {
     return folderPath.reverse();
 }
 
-async function getAllFolders() {
+async function getAllFolders(userId) {
     return await prisma.folder.findMany({
         include: {
             children: {
                 select: { id: true },
                 orderBy: { name: "asc" },
             },
+        },
+        where: {
+            ownerId: userId,
         },
         orderBy: { name: "asc" },
     });
@@ -151,8 +155,6 @@ async function getAllUsers() {
 
 // use prisma
 async function addUser(user) {
-    console.log("Inside addUser. User:");
-    console.log(user);
     await prisma.user.create({
         data: {
             username: user.username,
@@ -160,6 +162,16 @@ async function addUser(user) {
             firstname: user.firstname,
             lastname: user.lastname,
             password: user.hashedPassword,
+        },
+    });
+}
+
+async function addFolder(folderData) {
+    // console.log("inside query");
+    // console.log(folderData);
+    await prisma.folder.create({
+        data: {
+            ...folderData,
         },
     });
 }
@@ -175,13 +187,14 @@ async function getUserByField(fieldName, fieldValue) {
 }
 
 module.exports = {
-    getAllUsers,
-    getAllFolders,
     addUser,
     getUserByField,
-    getPathTo,
+    getAllUsers,
 
-    addFolders,
+    getAllFolders,
+    addFolder,
+
+    getPathTo,
 };
 
 // async function getUserProfileInfo(userid) {

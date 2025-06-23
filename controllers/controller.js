@@ -9,9 +9,12 @@ const {
 } = require("../utils/constants");
 
 const folderGet = async (req, res) => {
+    if (!req.user) {
+        return res.redirect("/login");
+    }
     const { folderId } = req.params;
     // move this logic to queries
-    let folders = await db.getAllFolders();
+    let folders = await db.getAllFolders(req.user.id);
 
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
@@ -26,14 +29,14 @@ const folderGet = async (req, res) => {
 
     for (let folder of folders) {
         map[folder.id] = folder;
-        if (!folder.folderId && folderId === ROOT_FOLDER_ID) {
+        if (!folder.parentId && folderId === ROOT_FOLDER_ID) {
             map[ROOT_FOLDER_ID].children.push({ id: folder.id });
         }
     }
+
     let folderPath = await db.getPathTo(folderId);
 
     map[folderId].isRoot = true;
-    // console.log(map);
 
     res.render("pages/folders", {
         folders: map,
@@ -85,33 +88,27 @@ const newFolderPost = [
     validateNewFolder,
     async (req, res) => {
         const { folderId } = req.params;
-        console.log("POST folderId: " + folderId);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             errorValues = Object.fromEntries(
                 errors.errors.map((error) => [error.path, error.msg])
             );
-            console.log(req.body);
             req.session.redirectData = {
                 values: req.body,
                 errors: errorValues,
             };
-            console.log(req.session.redirectData);
             res.redirect(`/folders/${folderId}/new`);
         } else {
             // create a folder in db
-
-            return res.status(401).render("pages/error", {
-                message: "You've created a new folder.",
-            });
-            // let post = {
-            //     ...req.body,
-            //     userId: req.user.userid,
-            //     postedOn: new Date(),
-            // };
-            // await db.addPost(post);
-            // res.redirect("/");
+            let folderData = {
+                name: req.body.name,
+                description: req.body.description,
+                parentId: folderId === ROOT_FOLDER_ID ? null : folderId,
+                ownerId: req.user.id,
+            };
+            await db.addFolder(folderData);
+            res.redirect(`/folders/${folderId}`);
         }
     },
 ];

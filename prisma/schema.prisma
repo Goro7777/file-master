@@ -23,6 +23,7 @@ model User {
   lastname  String
   password  String
   joinedAt  DateTime @default(now())
+  folders   Folder[]
 }
 
 model Folder {
@@ -34,6 +35,8 @@ model Folder {
   parentId    String?
   parent      Folder?  @relation("ParentChildren", fields: [parentId], references: [id])
   children    Folder[] @relation("ParentChildren")
+  owner       User?    @relation(fields: [ownerId], references: [id])
+  ownerId     String?
 }
 
 model File {

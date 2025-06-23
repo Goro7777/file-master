@@ -30,6 +30,7 @@ const folderGet = async (req, res) => {
             map[ROOT_FOLDER_ID].children.push({ id: folder.id });
         }
     }
+    let folderPath = await db.getPathTo(parentId);
 
     map[parentId].isRoot = true;
     // console.log(map);
@@ -37,6 +38,7 @@ const folderGet = async (req, res) => {
     res.render("pages/index", {
         folders: map,
         key: parentId,
+        folderPath,
     });
 };
 
@@ -65,12 +67,11 @@ const newFolderGet = async (req, res) => {
     const { parentId } = req.params;
 
     let folderPath = await db.getPathTo(parentId);
-    folderPath.push({
-        name: ROOT_FOLDER_NAME,
-        id: ROOT_FOLDER_ID,
-    });
-    folderPath.reverse();
-    console.log(folderPath);
+    // folderPath.push({
+    //     name: ROOT_FOLDER_NAME,
+    //     id: ROOT_FOLDER_ID,
+    // });
+    // folderPath.reverse();
 
     res.render("pages/newFolder", {
         values,

@@ -1,9 +1,12 @@
 <%- include('../partials/header', { title: "Club House" }) %>
+
 <div class="col-12 col-md-11 col-lg-9 col-xl-7">
+    <%-include('../partials/folderPath') %>
+
     <h2 class="fw-bold mb-4 text-uppercase">
         <i class="bi bi-folder2-open"></i>&nbsp<%= folders[key].name %>
     </h2>
-    <p class="border-5 border-success-subtle border-bottom">
+    <p class="border-5 border-success-subtle border-bottom mb-4">
         <%= folders[key].description %>
     </p>
     <div class="d-flex justify-content-around mb-4">

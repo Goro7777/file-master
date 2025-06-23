@@ -1,5 +1,6 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
+const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
 
 async function addFolders() {
     let folder10 = await prisma.folder.create({
@@ -114,7 +115,7 @@ async function func() {
 // func();
 
 async function getPathTo(id) {
-    return await prisma.$queryRaw`
+    let folderPath = await prisma.$queryRaw`
     WITH RECURSIVE bottom_up AS
     (
     SELECT F."parentId", F."name", F."id" FROM "Folder" AS F WHERE F."id"=${id}
@@ -125,6 +126,11 @@ async function getPathTo(id) {
     )
     SELECT * FROM bottom_up;
     `;
+    folderPath.push({
+        name: ROOT_FOLDER_NAME,
+        id: ROOT_FOLDER_ID,
+    });
+    return folderPath.reverse();
 }
 
 async function getAllFolders() {

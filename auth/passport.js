@@ -7,7 +7,7 @@ passport.use(
     new LocalStrategy(async (username, password, done) => {
         console.log("passport running");
         try {
-            let user = await db.getUserByField("username", username);
+            let user = await db.getUniqueUserByField("username", username);
             console.log("getting the user");
             console.log(user);
             if (!user) {
@@ -38,7 +38,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await db.getUserByField("id", id);
+        const user = await db.getUniqueUserByField("id", id);
         done(null, user);
     } catch (err) {
         done(err);

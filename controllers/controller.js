@@ -34,7 +34,7 @@ const folderGet = async (req, res) => {
         }
     }
 
-    let folderPath = await db.getPathTo(folderId);
+    let folderPath = await db.getFolderPathTo(folderId);
 
     map[folderId].isRoot = true;
 
@@ -43,11 +43,6 @@ const folderGet = async (req, res) => {
         key: folderId,
         folderPath,
     });
-};
-
-const deleteAllFoldersGet = async (req, res) => {
-    await db.deleteAllFolders();
-    res.redirect("/folders");
 };
 
 const newFileGet = async (req, res) => {
@@ -69,12 +64,7 @@ const newFolderGet = async (req, res) => {
     req.session.redirectData = null;
     const { folderId } = req.params;
 
-    let folderPath = await db.getPathTo(folderId);
-    // folderPath.push({
-    //     name: ROOT_FOLDER_NAME,
-    //     id: ROOT_FOLDER_ID,
-    // });
-    // folderPath.reverse();
+    let folderPath = await db.getFolderPathTo(folderId);
 
     res.render("pages/newFolder", {
         values,
@@ -118,5 +108,4 @@ module.exports = {
     newFileGet,
     newFolderGet,
     newFolderPost,
-    deleteAllFoldersGet,
 };

@@ -5,7 +5,10 @@ const validateSignup = [
     body("username")
         .trim()
         .custom(async (value) => {
-            let usernameTaken = await db.getUserByField("username", value);
+            let usernameTaken = await db.getUniqueUserByField(
+                "username",
+                value
+            );
             if (usernameTaken) throw new Error("Username already in use");
 
             return true;
@@ -25,7 +28,7 @@ const validateSignup = [
         .isEmail()
         .withMessage("Not a valid e-mail address")
         .custom(async (value) => {
-            let emailTaken = await db.getUserByField("email", value);
+            let emailTaken = await db.getUniqueUserByField("email", value);
             if (emailTaken) throw new Error("E-mail already in use");
 
             return true;
@@ -49,10 +52,17 @@ const validateNewFolder = [
         .not()
         .isEmpty()
         .withMessage("Folder name cannot be empty.")
-        .custom(async (value) => {
-            // let usernameTaken = await db.getUserByField("username", value);
-            // if (usernameTaken) throw new Error("Username already in use");
-            console.log("check if folder name is valid");
+        .custom(async (value, { req }) => {
+            const { folderId } = req.params;
+            let sameNameSibling = await db.getFolderByFieldsCI([
+                ["parentId", folderId],
+                ["name", value],
+            ]);
+
+            if (sameNameSibling)
+                throw new Error(
+                    "Folder name already in user in current folder"
+                );
             return true;
         }),
 ];

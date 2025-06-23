@@ -1,14 +1,191 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
+async function addFolders() {
+    let folder10 = await prisma.folder.create({
+        data: {
+            name: "Pictures",
+            description: "These are some of my best pictures ever",
+        },
+    });
+    let folder20 = await prisma.folder.create({
+        data: {
+            name: "Work pictures",
+            description: "These are my work photos.",
+            parentId: folder10.id,
+        },
+    });
+    let folder21 = await prisma.folder.create({
+        data: {
+            name: "Holiday pictures",
+            description: "These are my holiday photos.",
+            parentId: folder10.id,
+        },
+    });
+    let folder30 = await prisma.folder.create({
+        data: {
+            name: "Holiday pictures on the beach",
+            description: "These are my holiday photos on a beach.",
+            parentId: folder20.id,
+        },
+    });
+
+    let folder1 = await prisma.folder.create({
+        data: {
+            name: "Documents",
+            description: "These are some important documents",
+        },
+    });
+    let folder2a = await prisma.folder.create({
+        data: {
+            name: "Personal documents",
+            description: "These are personal documents.",
+            parentId: folder1.id,
+        },
+    });
+    let folder2b = await prisma.folder.create({
+        data: {
+            name: "Friends' documents",
+            description: "These some documents of my friends.",
+            parentId: folder1.id,
+        },
+    });
+    let folder3 = await prisma.folder.create({
+        data: {
+            name: "Acquaintances' documents",
+            description: "These some documents for my acquaintances.",
+            parentId: folder2b.id,
+        },
+    });
+}
+
+async function resetFunction() {
+    await deleteAllFolders();
+    await addFolders();
+}
+
+// resetFunction();
+
+async function deleteAllFolders() {
+    await prisma.folder.deleteMany();
+}
+
+async function func() {
+    let folder1 = await prisma.folder.create({
+        data: {
+            name: "Pictures",
+            description: "These are some of my best pictures ever",
+        },
+    });
+    let folder22 = await prisma.folder.create({
+        data: {
+            name: "Work pictures",
+            description: "These are my work photos.",
+            parentId: folder1.id,
+        },
+    });
+    let folder2 = await prisma.folder.create({
+        data: {
+            name: "Holiday pictures",
+            description: "These are my holiday photos.",
+            parentId: folder1.id,
+        },
+    });
+
+    let folder3 = await prisma.folder.create({
+        data: {
+            name: "Holiday pictures on the beach",
+            description: "These are my holiday photos on a beach.",
+            parentId: folder2.id,
+        },
+    });
+
+    // let fs = await prisma.folder.findMany();
+    // do this
+    // let f = await prisma.folder.findMany({
+    //     include: {
+    //         children: {
+    //             select: { id: true },
+    //             orderBy: { name: "asc" },
+    //         },
+    //     },
+    // });
+    // console.log(fs);
+    // console.log(f[0].children);
+
+    // let f = await prisma.folder.findFirst({
+    //     include: {
+    //         children: {
+    //             include: {
+    //                 children: {
+    //                     include: {
+    //                         children: {
+    //                             include: {
+    //                                 children: true,
+    //                             },
+    //                         },
+    //                     },
+    //                 },
+    //             },
+    //             orderBy: {
+    //                 name: "asc",
+    //             },
+    //         },
+    //     },
+    // });
+    // console.log(f);
+
+    // https://www.youtube.com/watch?v=7hZYh9qXxe4
+    // const result = await prisma.$queryRaw`
+    // WITH RECURSIVE top_down_folders AS
+    // (
+    // SELECT M."parentId", M."name", M."id" FROM "Folder" AS M WHERE M.NAME='Pictures'
+    // UNION
+    // SELECT f."parentId", f."name", f."id" FROM top_down_folders
+    // INNER JOIN "Folder" AS f
+    // ON top_down_folders."id" = f."parentId"
+    // )
+    // SELECT * FROM top_down_folders;
+    // `;
+
+    // console.log("raw query:");
+    // console.log(result);
+
+    // const result = await prisma.$queryRaw`
+    // WITH RECURSIVE top_down_folders AS
+    // (
+    // SELECT M."parentId", M."id", 0 AS lvl FROM "Folder" AS M WHERE M."parentId" IS NULL
+    // UNION
+    // SELECT f."parentId", f."id", top_down_folders."lvl" + 1 AS lvl  FROM top_down_folders
+    // INNER JOIN "Folder" AS f
+    // ON top_down_folders."id" = f."parentId"
+    // )
+    // SELECT MAX(lvl) AS maxLevel FROM top_down_folders;
+    // `;
+
+    // console.log("raw query:");
+    // console.log(result);
+
+    // await prisma.folder.deleteMany();
+}
+
+// func();
+
+async function getAllFolders() {
+    return await prisma.folder.findMany({
+        include: {
+            children: {
+                select: { id: true },
+                orderBy: { name: "asc" },
+            },
+        },
+        orderBy: { name: "asc" },
+    });
+}
+
 async function getAllUsers() {
     return prisma.user.findMany();
 }
-//   username  String   @unique
-//   email     String   @unique
-//   firstname String
-//   lastname  String
-//   password  String
 
 // use prisma
 async function addUser(user) {
@@ -24,36 +201,6 @@ async function addUser(user) {
         },
     });
 }
-
-// async function addUserOld(user) {
-//     await pool.query(
-//         `INSERT INTO users (username, firstname, lastname, email, password, joinedOn)
-//                     VALUES ($1, $2, $3, $4, $5, to_timestamp($6))`,
-//         [
-//             user.username,
-//             user.firstname,
-//             user.lastname,
-//             user.email,
-//             user.hashedPassword,
-//             user.joinedOn / 1000,
-//         ]
-//     );
-// }
-
-// async function getAllUsers() {
-//     const { rows } = await pool.query(
-//         "SELECT * FROM users ORDER BY joinedOn DESC"
-//     );
-//     return rows;
-// }
-
-// use prisma
-// async function getUserByFieldOld(fieldName, fieldValue) {
-//     const { rows } = await pool.query(
-//         `SELECT * FROM users WHERE ${fieldName} = '${fieldValue}'`
-//     );
-//     return rows[0];
-// }
 
 async function getUserByField(fieldName, fieldValue) {
     const user = await prisma.user.findUnique({
@@ -128,16 +275,10 @@ async function getUserByField(fieldName, fieldValue) {
 
 module.exports = {
     getAllUsers,
+    getAllFolders,
     addUser,
-    // getAllUsers,
     getUserByField,
-    // getUserProfileInfo,
-    // makeUserMember,
-    // requestUserAdmin,
 
-    // addPost,
-    // getAllPosts,
-    // getPost,
-    // deletePost,
-    // editPost,
+    addFolders,
+    deleteAllFolders,
 };

@@ -3,86 +3,37 @@ const { validateNewFolder } = require("../validation/validation");
 const bcrypt = require("bcryptjs");
 const db = require("../db/queries");
 
-const folder = {
-    isRoot: true,
-    id: 1,
-    // name: "Root",
-    files: [
-        { name: "File A", id: 100 },
-        { name: "File B", id: 101 },
-        { name: "File C", id: 102 },
-    ],
-    folders: [
-        {
-            id: 2,
-            name: "Folder A",
-            files: [
-                { name: "File D", id: 103 },
-                { name: "File E", id: 104 },
-            ],
-            folders: [],
-        },
-        {
-            id: 3,
-            name: "Folder B",
-            files: [{ name: "File F", id: 107 }],
-            folders: [
-                {
-                    id: 4,
-                    name: "Folder C",
-                    files: [
-                        { name: "File G", id: 105 },
-                        { name: "File H", id: 106 },
-                    ],
-                    folders: [],
-                },
-            ],
-        },
-    ],
-};
-// {
-//     id: 5,
-//     name: "Folder A",
-//     files: [
-//         { name: "File A", id: 108 },
-//         { name: "File B", id: 109 },
-//         { name: "File C", id: 110 },
-//     ],
-//     folders: [
-//         {
-//             id: 6,
-//             name: "Folder B",
-//             files: [
-//                 { name: "File D", id: 111 },
-//                 { name: "File E", id: 112 },
-//             ],
-//             folders: [],
-//         },
-//         {
-//             id: 7,
-//             name: "Folder C",
-//             files: [{ name: "File F", id: 113 }],
-//             folders: [
-//                 {
-//                     id: 8,
-//                     name: "Folder D",
-//                     files: [
-//                         { name: "File G", id: 114 },
-//                         { name: "File H", id: 115 },
-//                     ],
-//                     folders: [],
-//                 },
-//             ],
-//         },
-//     ],
-// };
+const ROOT_FOLDER_ID = "root";
+const ROOT_FOLDER_NAME = "root";
 
 const allFoldersGet = async (req, res) => {
-    // let posts = await db.getAllPosts();
-    console.log("providing folders to view");
+    let folders = await db.getAllFolders();
+
+    let map = {
+        [ROOT_FOLDER_ID]: {
+            name: ROOT_FOLDER_NAME,
+            isRoot: true,
+            children: [],
+        },
+    };
+
+    for (let folder of folders) {
+        map[folder.id] = folder;
+        if (!folder.parentId) {
+            map[ROOT_FOLDER_ID].children.push({ id: folder.id });
+        }
+    }
+    // console.log(map);
+
     res.render("pages/index", {
-        folder,
+        folders: map,
+        key: ROOT_FOLDER_ID,
     });
+};
+
+const deleteAllFoldersGet = async (req, res) => {
+    await db.deleteAllFolders();
+    res.redirect("/folders");
 };
 
 const newFileGet = async (req, res) => {
@@ -177,4 +128,5 @@ module.exports = {
     newFileGet,
     newFolderGet,
     newFolderPost,
+    deleteAllFoldersGet,
 };

@@ -17,6 +17,8 @@ router.post("/sign-up", ...authController.signupPost);
 router.get("/folders/:parentId/new", controller.newFolderGet);
 router.post("/folders/:parentId/new", ...controller.newFolderPost);
 
+router.get("/folders/deleteAll", controller.deleteAllFoldersGet);
+
 // GET  /folders/:parentId/files/:fileId     READ FILE GET
 // GET  /folders/:parentId/files/new         CREATE FILE GET
 // POST /folders/:parentId/files/new         CREATE FILE POST

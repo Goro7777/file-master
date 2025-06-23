@@ -2,7 +2,10 @@
 <div class="col-12 col-md-11 col-lg-9 col-xl-7">
     <div class="d-flex justify-content-around mb-4">
         <a href="/folders/0/files/new" class="btn btn-primary">Upload a file</a>
-        <a href="/folders/0/new" class="btn btn-warning">Create a folder</a>
+        <a href="/folders/deleteAll" class="btn btn-danger">Delete all</a>
+        <a href="/folders/<%= key %>/new" class="btn btn-warning"
+            >Create a folder</a
+        >
     </div>
     <%- include('../partials/folder') %>
 

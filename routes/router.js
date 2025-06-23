@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const controller = require("../controllers/controller");
+const { ROOT_FOLDER_ID } = require("../utils/constants");
 
-router.get("/", (req, res) => res.redirect("/folders"));
-router.get("/folders", controller.allFoldersGet);
+router.get("/", (req, res) => res.redirect(`/folders/${ROOT_FOLDER_ID}`));
+router.get(`/folders/${ROOT_FOLDER_ID}`, controller.folderGet);
 
 router.get("/login", authController.loginGet);
 router.post("/login", authController.loginPost);

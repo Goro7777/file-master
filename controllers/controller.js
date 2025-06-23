@@ -3,10 +3,9 @@ const { validateNewFolder } = require("../validation/validation");
 const bcrypt = require("bcryptjs");
 const db = require("../db/queries");
 
-const ROOT_FOLDER_ID = "root";
-const ROOT_FOLDER_NAME = "root";
+const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
 
-const allFoldersGet = async (req, res) => {
+const folderGet = async (req, res) => {
     let folders = await db.getAllFolders();
 
     let map = {
@@ -107,7 +106,7 @@ const newFolderPost = [
 ];
 
 module.exports = {
-    allFoldersGet,
+    folderGet,
     newFileGet,
     newFolderGet,
     newFolderPost,

@@ -3,7 +3,7 @@
     <h2 class="fw-bold mb-4 text-uppercase">
         Create a <span class="text-warning">Folder</span>
     </h2>
-
+    <%- include('../partials/folderPath') %>
     <form
         class="card-body mb-4 ms-3"
         action="/folders/<%= locals.parentId %>/new"

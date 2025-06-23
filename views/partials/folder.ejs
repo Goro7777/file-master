@@ -11,6 +11,11 @@
                 aria-controls="panelsStayOpen-collapseOne<%= folders[key].id %>"
             >
                 <i class="bi bi-folder"></i>&nbsp&nbsp<%= folders[key].name %>
+                <a
+                    href="/folders/<%= key %>/new"
+                    class="btn btn-link text-warning"
+                    ><i class="bi bi-folder-plus fs-5"></i
+                ></a>
             </button>
         </h2>
         <% } %>

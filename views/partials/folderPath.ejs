@@ -1,0 +1,17 @@
+<p>
+    <i>Path:&nbsp&nbsp</i>
+    <a
+        href="/folders/<%= folderPath[0].id %>/new"
+        class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+    >
+        <i class="bi bi-folder"></i>&nbsp<%= folderPath[0].name %></a
+    >
+    <% for (let i = 1; i < folderPath.length; i++) { %> &nbsp
+    <i class="bi bi-chevron-right"></i>&nbsp&nbsp<a
+        href="/folders/<%= folderPath[i].id %>/new"
+        class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+    >
+        <i class="bi bi-folder"></i>&nbsp<%= folderPath[i].name %></a
+    >
+    <% } %>
+</p>

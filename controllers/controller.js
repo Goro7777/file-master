@@ -55,10 +55,19 @@ const newFolderGet = async (req, res) => {
     req.session.redirectData = null;
     const { parentId } = req.params;
 
+    let folderPath = await db.getPathTo(parentId);
+    folderPath.push({
+        name: ROOT_FOLDER_NAME,
+        id: ROOT_FOLDER_ID,
+    });
+    folderPath.reverse();
+    console.log(folderPath);
+
     res.render("pages/newFolder", {
         values,
         errors,
         parentId,
+        folderPath,
     });
 };
 
@@ -96,32 +105,6 @@ const newFolderPost = [
         }
     },
 ];
-
-// const profileGet = async (req, res) => {
-//     if (!req.isAuthenticated()) {
-//         return res.status(401).render("pages/error", {
-//             message: "401 Unauthorized: You are not logged in.",
-//         });
-//     }
-
-//     let { userid } = req.params;
-//     if (userid != req.user.userid) {
-//         if (!req.user.ismember && !req.user.isadmin) {
-//             return res.status(403).render("pages/error", {
-//                 message: "403 Forbidden: You are not a member.",
-//             });
-//         }
-//     }
-
-//     let info = await db.getUserProfileInfo(userid);
-//     info.status = info.isadmin
-//         ? "Admin"
-//         : info.ismember
-//         ? "Club member"
-//         : "User";
-
-//     res.render("pages/profile", { info });
-// };
 
 module.exports = {
     allFoldersGet,

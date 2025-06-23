@@ -71,36 +71,6 @@ async function deleteAllFolders() {
 }
 
 async function func() {
-    let folder1 = await prisma.folder.create({
-        data: {
-            name: "Pictures",
-            description: "These are some of my best pictures ever",
-        },
-    });
-    let folder22 = await prisma.folder.create({
-        data: {
-            name: "Work pictures",
-            description: "These are my work photos.",
-            parentId: folder1.id,
-        },
-    });
-    let folder2 = await prisma.folder.create({
-        data: {
-            name: "Holiday pictures",
-            description: "These are my holiday photos.",
-            parentId: folder1.id,
-        },
-    });
-
-    let folder3 = await prisma.folder.create({
-        data: {
-            name: "Holiday pictures on the beach",
-            description: "These are my holiday photos on a beach.",
-            parentId: folder2.id,
-        },
-    });
-
-    // let fs = await prisma.folder.findMany();
     // do this
     // let f = await prisma.folder.findMany({
     //     include: {
@@ -110,31 +80,7 @@ async function func() {
     //         },
     //     },
     // });
-    // console.log(fs);
-    // console.log(f[0].children);
-
-    // let f = await prisma.folder.findFirst({
-    //     include: {
-    //         children: {
-    //             include: {
-    //                 children: {
-    //                     include: {
-    //                         children: {
-    //                             include: {
-    //                                 children: true,
-    //                             },
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //             orderBy: {
-    //                 name: "asc",
-    //             },
-    //         },
-    //     },
-    // });
     // console.log(f);
-
     // https://www.youtube.com/watch?v=7hZYh9qXxe4
     // const result = await prisma.$queryRaw`
     // WITH RECURSIVE top_down_folders AS
@@ -147,10 +93,8 @@ async function func() {
     // )
     // SELECT * FROM top_down_folders;
     // `;
-
     // console.log("raw query:");
     // console.log(result);
-
     // const result = await prisma.$queryRaw`
     // WITH RECURSIVE top_down_folders AS
     // (
@@ -162,14 +106,26 @@ async function func() {
     // )
     // SELECT MAX(lvl) AS maxLevel FROM top_down_folders;
     // `;
-
     // console.log("raw query:");
     // console.log(result);
-
     // await prisma.folder.deleteMany();
 }
 
 // func();
+
+async function getPathTo(id) {
+    return await prisma.$queryRaw`
+    WITH RECURSIVE bottom_up AS
+    (
+    SELECT F."parentId", F."name", F."id" FROM "Folder" AS F WHERE F."id"=${id}
+    UNION
+    SELECT f."parentId", f."name", f."id" FROM bottom_up
+    INNER JOIN "Folder" AS f
+    ON bottom_up."parentId" = f."id"
+    )
+    SELECT * FROM bottom_up;
+    `;
+}
 
 async function getAllFolders() {
     return await prisma.folder.findMany({
@@ -211,6 +167,16 @@ async function getUserByField(fieldName, fieldValue) {
 
     return user;
 }
+
+module.exports = {
+    getAllUsers,
+    getAllFolders,
+    addUser,
+    getUserByField,
+    getPathTo,
+
+    addFolders,
+};
 
 // async function getUserProfileInfo(userid) {
 //     const { rows } = await pool.query(
@@ -272,13 +238,3 @@ async function getUserByField(fieldName, fieldValue) {
 //         [post.title, post.text, post.postedOn / 1000]
 //     );
 // }
-
-module.exports = {
-    getAllUsers,
-    getAllFolders,
-    addUser,
-    getUserByField,
-
-    addFolders,
-    deleteAllFolders,
-};

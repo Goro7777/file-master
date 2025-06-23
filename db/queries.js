@@ -62,10 +62,10 @@ async function addFolders() {
 
 async function resetFunction() {
     await deleteAllFolders();
-    await addFolders();
+    // await addFolders();
 }
 
-// resetFunction();
+resetFunction();
 
 async function deleteAllFolders() {
     await prisma.folder.deleteMany();

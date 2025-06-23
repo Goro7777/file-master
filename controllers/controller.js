@@ -9,12 +9,12 @@ const {
 } = require("../utils/constants");
 
 const folderGet = async (req, res) => {
-    const { parentId } = req.params;
-    console.log("parentId: " + parentId);
+    const { folderId } = req.params;
+    // move this logic to queries
     let folders = await db.getAllFolders();
 
     let map = {};
-    if (parentId === ROOT_FOLDER_ID) {
+    if (folderId === ROOT_FOLDER_ID) {
         map[ROOT_FOLDER_ID] = {
             id: ROOT_FOLDER_ID,
             name: ROOT_FOLDER_NAME,
@@ -26,18 +26,18 @@ const folderGet = async (req, res) => {
 
     for (let folder of folders) {
         map[folder.id] = folder;
-        if (!folder.parentId && parentId === ROOT_FOLDER_ID) {
+        if (!folder.folderId && folderId === ROOT_FOLDER_ID) {
             map[ROOT_FOLDER_ID].children.push({ id: folder.id });
         }
     }
-    let folderPath = await db.getPathTo(parentId);
+    let folderPath = await db.getPathTo(folderId);
 
-    map[parentId].isRoot = true;
+    map[folderId].isRoot = true;
     // console.log(map);
 
-    res.render("pages/index", {
+    res.render("pages/folders", {
         folders: map,
-        key: parentId,
+        key: folderId,
         folderPath,
     });
 };
@@ -64,9 +64,9 @@ const newFolderGet = async (req, res) => {
 
     let { values, errors } = req.session.redirectData || {};
     req.session.redirectData = null;
-    const { parentId } = req.params;
+    const { folderId } = req.params;
 
-    let folderPath = await db.getPathTo(parentId);
+    let folderPath = await db.getPathTo(folderId);
     // folderPath.push({
     //     name: ROOT_FOLDER_NAME,
     //     id: ROOT_FOLDER_ID,
@@ -76,7 +76,7 @@ const newFolderGet = async (req, res) => {
     res.render("pages/newFolder", {
         values,
         errors,
-        parentId,
+        folderId,
         folderPath,
     });
 };
@@ -84,8 +84,8 @@ const newFolderGet = async (req, res) => {
 const newFolderPost = [
     validateNewFolder,
     async (req, res) => {
-        const { parentId } = req.params;
-        console.log("POST parentId: " + parentId);
+        const { folderId } = req.params;
+        console.log("POST folderId: " + folderId);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -98,7 +98,7 @@ const newFolderPost = [
                 errors: errorValues,
             };
             console.log(req.session.redirectData);
-            res.redirect(`/folders/${parentId}/new`);
+            res.redirect(`/folders/${folderId}/new`);
         } else {
             // create a folder in db
 

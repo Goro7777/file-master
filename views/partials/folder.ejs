@@ -3,7 +3,7 @@
         <% if (!folders[key].isRoot) { %>
         <h2 class="accordion-header">
             <button
-                class="accordion-button py-1 rounded-0 ps-3"
+                class="accordion-button py-1 rounded-0 ps-3 d-flex"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseOne<%= folders[key].id %>"
@@ -11,11 +11,30 @@
                 aria-controls="panelsStayOpen-collapseOne<%= folders[key].id %>"
             >
                 <i class="bi bi-folder"></i>&nbsp&nbsp<%= folders[key].name %>
-                <a
-                    href="/folders/<%= key %>/new"
-                    class="btn btn-link text-warning"
-                    ><i class="bi bi-folder-plus fs-5"></i
-                ></a>
+                <span class="flex-grow-1 text-end">
+                    <a
+                        href="/folders/<%= key %>/files/new"
+                        class="btn btn-link text-primary"
+                        data-toggle="tooltip"
+                        title="Upload a file"
+                        ><i class="bi bi-file-plus fs-5"></i
+                    ></a>
+                    <a
+                        href="/folders/<%= key %>/new"
+                        class="btn btn-link text-warning"
+                        data-toggle="tooltip"
+                        title="Create a folder"
+                        ><i class="bi bi-folder-plus fs-5"></i
+                    ></a>
+                    <a
+                        href="/folders/<%= key %>"
+                        class="btn"
+                        data-toggle="tooltip"
+                        title="Open the folder"
+                        ><i class="bi bi-folder2-open fs-5"></i></i
+                    ></a>
+                    
+                </span>
             </button>
         </h2>
         <% } %>

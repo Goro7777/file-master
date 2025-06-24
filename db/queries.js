@@ -1,4 +1,5 @@
 const { PrismaClient } = require("../generated/prisma");
+const { connect } = require("../routes/router");
 const prisma = new PrismaClient();
 const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
 
@@ -27,17 +28,44 @@ async function getUniqueUserByField(fieldName, fieldValue) {
 
 // folders
 async function addFolder(folderData) {
-    await prisma.folder.create({
+    let newFolder = await prisma.folder.create({
         data: {
             name: folderData.name,
             description: folderData.description,
-            parentId: folderData.parentId,
-            ownerId: folderData.ownerId,
+            owner: {
+                connect: {
+                    id: folderData.ownerId,
+                },
+            },
+        },
+    });
+
+    if (folderData.parentId) {
+        await prisma.folder.update({
+            where: {
+                id: folderData.parentId,
+            },
+            data: {
+                children: {
+                    connect: {
+                        id: newFolder.id,
+                    },
+                },
+            },
+        });
+    }
+}
+
+async function deleteFolder(folderId) {
+    await prisma.folder.delete({
+        where: {
+            id: folderId,
         },
     });
 }
 
 async function getAllFolders(userId) {
+    // await prisma.folder.deleteMany();
     return await prisma.folder.findMany({
         include: {
             children: {
@@ -89,6 +117,7 @@ module.exports = {
     getUniqueUserByField,
 
     addFolder,
+    deleteFolder,
     getAllFolders,
     getFolderByFieldsCI,
     getFolderPathTo,

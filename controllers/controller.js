@@ -12,6 +12,7 @@ const folderGet = async (req, res) => {
     if (!req.user) return res.redirect("/login");
 
     let folders = await db.getAllFolders(req.user.id);
+    console.log(folders);
     const { folderId } = req.params;
 
     let map = {};
@@ -90,13 +91,18 @@ const newFolderPost = [
             await db.addFolder({
                 name: req.body.name,
                 description: req.body.description,
-                parentId: folderId === ROOT_FOLDER_ID ? null : folderId,
+                parentId: folderId === ROOT_FOLDER_ID ? undefined : folderId,
                 ownerId: req.user.id,
             });
             res.redirect(`/folders/${folderId}`);
         }
     },
 ];
+
+const deleteFolderPost = async (req, res) => {
+    db.deleteFolder(req.body.folderId);
+    res.redirect("/");
+};
 
 const newFileGet = async (req, res) => {
     if (!req.isAuthenticated()) {
@@ -110,6 +116,7 @@ module.exports = {
     folderGet,
     newFolderGet,
     newFolderPost,
+    deleteFolderPost,
 
     newFileGet,
 };

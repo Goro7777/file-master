@@ -33,7 +33,7 @@ model Folder {
   createdAt   DateTime @default(now())
   files       File[]
   parentId    String?
-  parent      Folder?  @relation("ParentChildren", fields: [parentId], references: [id])
+  parent      Folder?  @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children    Folder[] @relation("ParentChildren")
   owner       User?    @relation(fields: [ownerId], references: [id])
   ownerId     String?

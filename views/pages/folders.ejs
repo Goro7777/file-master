@@ -9,11 +9,70 @@
     <p class="border-5 border-success-subtle border-bottom mb-4">
         <%= folders[key].description %>
     </p>
-    <div class="d-flex justify-content-around mb-4">
-        <a href="/folders/0/files/new" class="btn btn-primary">Upload a file</a>
-        <a href="/folders/<%= key %>/new" class="btn btn-warning"
-            ><i class="bi bi-folder-plus"></i>&nbsp&nbspCreate a folder</a
+    <div class="d-flex mb-4 gap-3">
+        <a href="/folders/0/files/new" class="btn btn-primary"
+            ><i class="bi bi-file-plus"></i>&nbsp&nbspUpload a file</a
         >
+        <a href="/folders/<%= key %>/new" class="btn btn-warning"
+            ><i class="bi bi-folder-plus"></i>&nbsp&nbspCreate a sub-folder</a
+        >
+        <% if (!folders[key].cannotDelete) { %>
+        <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal"
+        >
+            <i class="bi bi-trash3"></i>&nbsp&nbspDelete the folder
+        </button>
+        <div
+            class="modal fade"
+            id="deleteModal"
+            tabindex="-1"
+            aria-labelledby="deleteModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">
+                            <strong class="text-danger">Delete</strong
+                            >&nbsp&nbsp <i class="bi bi-folder"></i> <%=
+                            folders[key].name %><strong class="text-danger"
+                                >&nbsp?</strong
+                            >
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this folder and all its
+                        contents?<br />This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <form action="/folders/delete" method="POST">
+                            <input
+                                type="hidden"
+                                name="folderId"
+                                value="<%= folders[key].id %>"
+                            />
+                            <button
+                                type="button"
+                                class="btn btn-danger"
+                                data-bs-dismiss="modal"
+                            >
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
     </div>
 
     <%- include('../partials/folder') %>

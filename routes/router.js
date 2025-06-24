@@ -25,5 +25,6 @@ router.post("/folders/:folderId/new", ...controller.newFolderPost);
 // GET  /folders/:folderId/:folderId         READ FOLDER GET
 // GET  /folders/:folderId/new               CREATE FOLDER GET
 // POST /folders/:folderId/new               CREATE FOLDER POST
+// POST /folders/delete                      DELETE FOLDER GET
 
 module.exports = router;

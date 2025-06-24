@@ -20,8 +20,8 @@ const folderGet = async (req, res) => {
             id: ROOT_FOLDER_ID,
             name: ROOT_FOLDER_NAME,
             description: ROOT_FOLDER_DESCRIPTION,
-            isRoot: true,
             children: [],
+            cannotDelete: true,
         };
     }
     for (let folder of folders) {

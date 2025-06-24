@@ -29,7 +29,10 @@ async function getUniqueUserByField(fieldName, fieldValue) {
 async function addFolder(folderData) {
     await prisma.folder.create({
         data: {
-            ...folderData,
+            name: folderData.name,
+            description: folderData.description,
+            parentId: folderData.parentId,
+            ownerId: folderData.ownerId,
         },
     });
 }

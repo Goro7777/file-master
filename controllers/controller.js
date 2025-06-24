@@ -48,11 +48,20 @@ const newFolderGet = async (req, res) => {
         });
     }
 
+    const { folderId } = req.params;
+    // check if user is trying to access another user's folder
+    if (folderId !== ROOT_FOLDER_ID) {
+        let folder = await db.getFolderByFieldsCI([["id", folderId]]);
+        if (!folder || folder.ownerId !== req.user.id) {
+            return res.status(404).render("pages/error", {
+                message: "404 Not Found: You do not have such a folder.",
+            });
+        }
+    }
+    let folderPath = await db.getFolderPathTo(folderId);
+
     let { values, errors } = req.session.redirectData || {};
     req.session.redirectData = null;
-
-    const { folderId } = req.params;
-    let folderPath = await db.getFolderPathTo(folderId);
 
     res.render("pages/newFolder", {
         values,
@@ -78,14 +87,12 @@ const newFolderPost = [
             };
             res.redirect(`/folders/${folderId}/new`);
         } else {
-            // create a folder in db
-            let folderData = {
+            await db.addFolder({
                 name: req.body.name,
                 description: req.body.description,
                 parentId: folderId === ROOT_FOLDER_ID ? null : folderId,
                 ownerId: req.user.id,
-            };
-            await db.addFolder(folderData);
+            });
             res.redirect(`/folders/${folderId}`);
         }
     },

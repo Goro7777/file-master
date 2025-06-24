@@ -9,12 +9,10 @@ const {
 } = require("../utils/constants");
 
 const folderGet = async (req, res) => {
-    if (!req.user) {
-        return res.redirect("/login");
-    }
-    const { folderId } = req.params;
-    // move this logic to queries
+    if (!req.user) return res.redirect("/login");
+
     let folders = await db.getAllFolders(req.user.id);
+    const { folderId } = req.params;
 
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
@@ -26,31 +24,21 @@ const folderGet = async (req, res) => {
             children: [],
         };
     }
-
     for (let folder of folders) {
         map[folder.id] = folder;
         if (!folder.parentId && folderId === ROOT_FOLDER_ID) {
             map[ROOT_FOLDER_ID].children.push({ id: folder.id });
         }
     }
+    map[folderId].isRoot = true;
 
     let folderPath = await db.getFolderPathTo(folderId);
-
-    map[folderId].isRoot = true;
 
     res.render("pages/folders", {
         folders: map,
         key: folderId,
         folderPath,
     });
-};
-
-const newFileGet = async (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).render("pages/error", {
-            message: "401 Unauthorized: You are not logged in.",
-        });
-    }
 };
 
 const newFolderGet = async (req, res) => {
@@ -62,8 +50,8 @@ const newFolderGet = async (req, res) => {
 
     let { values, errors } = req.session.redirectData || {};
     req.session.redirectData = null;
-    const { folderId } = req.params;
 
+    const { folderId } = req.params;
     let folderPath = await db.getFolderPathTo(folderId);
 
     res.render("pages/newFolder", {
@@ -103,9 +91,18 @@ const newFolderPost = [
     },
 ];
 
+const newFileGet = async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).render("pages/error", {
+            message: "401 Unauthorized: You are not logged in.",
+        });
+    }
+};
+
 module.exports = {
     folderGet,
-    newFileGet,
     newFolderGet,
     newFolderPost,
+
+    newFileGet,
 };

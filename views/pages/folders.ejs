@@ -3,23 +3,32 @@
 <div class="col-12 col-md-11 col-lg-9 col-xl-7">
     <%-include('../partials/folderPath') %>
 
-    <h2 class="fw-bold mb-4 text-uppercase">
+    <h2 class="fw-bold mb-4 text-uppercase d-flex px-2">
         <i class="bi bi-folder2-open"></i>&nbsp<%= folders[key].name %>
+        <span class="flex-grow-1 text-end"
+            ><a
+                href="/folders/<%= key %>"
+                class="btn"
+                data-toggle="tooltip"
+                title="Edit the folder"
+            >
+                <i class="bi bi-pen"></i></a
+        ></span>
     </h2>
-    <p class="border-5 border-success-subtle border-bottom mb-4">
+    <p class="border-5 border-success-subtle border-bottom mb-4 px-2">
         <%= folders[key].description %>
     </p>
     <div class="d-flex mb-4 gap-3">
-        <a href="/folders/0/files/new" class="btn btn-primary"
+        <a href="/folders/0/files/new" class="btn btn-primary btn-sm"
             ><i class="bi bi-file-plus"></i>&nbsp&nbspUpload a file</a
         >
-        <a href="/folders/<%= key %>/new" class="btn btn-warning"
+        <a href="/folders/<%= key %>/new" class="btn btn-warning btn-sm"
             ><i class="bi bi-folder-plus"></i>&nbsp&nbspCreate a sub-folder</a
         >
         <% if (!folders[key].cannotDelete) { %>
         <button
             type="button"
-            class="btn btn-danger"
+            class="btn btn-danger btn-sm"
             data-bs-toggle="modal"
             data-bs-target="#deleteModal"
         >

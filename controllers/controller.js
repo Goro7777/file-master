@@ -175,11 +175,9 @@ const addFilePost = [
             res.redirect(`/folders/${folderId}/files/upload`);
             return;
         }
-        if (req.file) {
-            console.log("I have a file");
-        } else {
-            console.log("I DO NOT have a file");
-        }
+
+        console.log(req.file);
+
         console.log(`Uploading a file to folder with id: ${folderId}`);
         res.redirect(`/folders/${folderId}`);
     },

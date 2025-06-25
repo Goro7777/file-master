@@ -7,7 +7,7 @@ const {
     ROOT_FOLDER_DESCRIPTION,
 } = require("../utils/constants");
 
-const folderGet = async (req, res) => {
+const showFolderGet = async (req, res) => {
     let folders = await db.getAllFolders(req.user.id);
     const { folderId } = req.params;
 
@@ -31,14 +31,14 @@ const folderGet = async (req, res) => {
 
     let folderPath = await db.getFolderPathTo(folderId);
 
-    res.render("pages/folders", {
+    res.render("pages/folder", {
         folders: map,
         key: folderId,
         folderPath,
     });
 };
 
-const newFolderGet = async (req, res) => {
+const addFolderGet = async (req, res) => {
     const { folderId } = req.params;
     // check if user is trying to access another user's folder
     if (folderId !== ROOT_FOLDER_ID) {
@@ -63,7 +63,7 @@ const newFolderGet = async (req, res) => {
     });
 };
 
-const newFolderPost = [
+const addFolderPost = [
     validateFolderData,
     async (req, res) => {
         const { folderId } = req.params;
@@ -152,9 +152,9 @@ const deleteFolderPost = async (req, res) => {
 };
 
 module.exports = {
-    folderGet,
-    newFolderGet,
-    newFolderPost,
+    showFolderGet,
+    addFolderGet,
+    addFolderPost,
     deleteFolderPost,
     editFolderGet,
     editFolderPost,

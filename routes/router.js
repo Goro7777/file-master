@@ -15,9 +15,9 @@ router.get("/logout", authController.logoutGet);
 router.get("/sign-up", authController.signupGet);
 router.post("/sign-up", ...authController.signupPost);
 
-router.get("/folders/:folderId", authChecker, controller.folderGet);
-router.get("/folders/:folderId/create", authChecker, controller.newFolderGet);
-router.post("/folders/:folderId/create", ...controller.newFolderPost);
+router.get("/folders/:folderId", authChecker, controller.showFolderGet);
+router.get("/folders/:folderId/create", authChecker, controller.addFolderGet);
+router.post("/folders/:folderId/create", ...controller.addFolderPost);
 router.post("/folders/delete", controller.deleteFolderPost);
 router.get("/folders/:folderId/edit", authChecker, controller.editFolderGet);
 router.post("/folders/:folderId/edit", ...controller.editFolderPost);

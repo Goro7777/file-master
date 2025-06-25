@@ -5,22 +5,37 @@
     <h2 class="fw-bold mb-4 text-uppercase">
         Upload a <span class="text-primary">File</span>
     </h2>
-    <form action="/folders/:folderId/files/upload">
+    <form
+        action="/folders/<%= locals.folderId %>/files/upload"
+        method="POST"
+        enctype="multipart/form-data"
+    >
         <label for="formFileMultiple" class="form-label"
-            >Multiple files input example</label
+            >Upload your file</label
         >
         <input
-            class="form-control mb-4"
+            class="form-control"
             type="file"
             id="formFileMultiple"
-            multiple
+            name="upload"
         />
-        <a
-            href="/folders/<%= locals.folderId %>"
-            class="btn btn btn-outline-dark px-5 text-capitalize"
-            type="submit"
-        >
-            Cancel
-        </a>
+        <% if (locals.error) { %>
+        <div class="text-warning"><%= error %></div>
+        <% } %>
+        <div class="mt-4">
+            <button
+                class="btn btn-outline-success px-5 text-capitalize"
+                type="submit"
+            >
+                Upload</button
+            >&nbsp&nbsp
+            <a
+                href="/folders/<%= locals.folderId %>"
+                class="btn btn-outline-dark px-5 text-capitalize"
+                type="submit"
+            >
+                Cancel
+            </a>
+        </div>
     </form>
 </div>

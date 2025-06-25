@@ -6,6 +6,7 @@ const {
     ROOT_FOLDER_NAME,
     ROOT_FOLDER_DESCRIPTION,
 } = require("../utils/constants");
+const { supabase, upload } = require("../storage/config");
 
 const showFolderGet = async (req, res) => {
     let folders = await db.getAllFolders(req.user.id);
@@ -155,14 +156,34 @@ const addFileGet = async (req, res) => {
     const { folderId } = req.params;
     let folderPath = await db.getFolderPathTo(folderId);
 
-    res.render("pages/newFile", { folderPath, folderId });
+    let { error } = req.session.redirectData || {};
+    req.session.redirectData = null;
+
+    res.render("pages/newFile", { folderPath, folderId, error });
 };
 
-const addFilePost = async (req, res) => {
-    const { folderId } = req.params;
-    console.log(`Uploading a file to folder with id: ${folderId}`);
-    res.redirect(`/folders/${folderId}`);
-};
+const addFilePost = [
+    upload.single("upload"),
+    async (req, res) => {
+        const { folderId } = req.params;
+
+        if (!req.file) {
+            console.log("no file uploaded");
+            req.session.redirectData = {
+                error: "No file uploaded.",
+            };
+            res.redirect(`/folders/${folderId}/files/upload`);
+            return;
+        }
+        if (req.file) {
+            console.log("I have a file");
+        } else {
+            console.log("I DO NOT have a file");
+        }
+        console.log(`Uploading a file to folder with id: ${folderId}`);
+        res.redirect(`/folders/${folderId}`);
+    },
+];
 
 module.exports = {
     showFolderGet,

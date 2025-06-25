@@ -44,11 +44,18 @@ action.slice(1)) + " Folder" }) %>
             </div>
 
             <button
-                class="btn btn-outline-success btn-lg px-5 text-capitalize"
+                class="btn btn-outline-success px-5 btn-lg text-capitalize"
                 type="submit"
             >
-                <%= action %>
-            </button>
+                <%= action %></button
+            >&nbsp&nbsp
+            <a
+                href="/folders/<%= locals.folderId %>"
+                class="btn btn btn-outline-dark px-5 btn-lg text-capitalize"
+                type="submit"
+            >
+                Cancel
+            </a>
         </div>
     </form>
 </div>

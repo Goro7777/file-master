@@ -43,8 +43,8 @@
         >
             <div class="accordion-body py-0 pe-0">
                 <% for (let subFolder of folders[key].children) { %> <%-
-                include('./folder', { folders, key: subFolder.id }) %> <% } %>
-                <% if (folders[key].files) { for (let file of
+                include('./folderAccordion', { folders, key: subFolder.id }) %>
+                <% } %> <% if (folders[key].files) { for (let file of
                 folders[key].files) { %>
                 <div class="ps-3 py-1">
                     <i class="bi bi-file-earmark"></i>&nbsp&nbsp<%= files.name

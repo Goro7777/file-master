@@ -54,7 +54,7 @@ const newFolderGet = async (req, res) => {
     let { values, errors } = req.session.redirectData || {};
     req.session.redirectData = null;
 
-    res.render("pages/newFolder", {
+    res.render("pages/folderData", {
         action: "create",
         values,
         errors,
@@ -112,7 +112,7 @@ const editFolderGet = async (req, res) => {
         values = { name: folder.name, description: folder.description };
     else req.session.redirectData = null;
 
-    res.render("pages/newFolder", {
+    res.render("pages/folderData", {
         action: "edit",
         values,
         errors,

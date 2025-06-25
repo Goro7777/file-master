@@ -22,6 +22,8 @@ router.post("/folders/delete", controller.deleteFolderPost);
 router.get("/folders/:folderId/edit", authChecker, controller.editFolderGet);
 router.post("/folders/:folderId/edit", ...controller.editFolderPost);
 
+router.get("/folders/:folderId/files/upload", controller.addFileGet);
+router.post("/folders/:folderId/files/upload", controller.addFilePost);
 // GET  /folders/:folderId/files/:fileId        READ FILE GET
 // GET  /folders/:folderId/files/create         CREATE FILE GET
 // POST /folders/:folderId/files/create         CREATE FILE POST

@@ -151,6 +151,19 @@ const deleteFolderPost = async (req, res) => {
     res.redirect("/");
 };
 
+const addFileGet = async (req, res) => {
+    const { folderId } = req.params;
+    let folderPath = await db.getFolderPathTo(folderId);
+
+    res.render("pages/newFile", { folderPath, folderId });
+};
+
+const addFilePost = async (req, res) => {
+    const { folderId } = req.params;
+    console.log(`Uploading a file to folder with id: ${folderId}`);
+    res.redirect(`/folders/${folderId}`);
+};
+
 module.exports = {
     showFolderGet,
     addFolderGet,
@@ -158,4 +171,7 @@ module.exports = {
     deleteFolderPost,
     editFolderGet,
     editFolderPost,
+
+    addFileGet,
+    addFilePost,
 };

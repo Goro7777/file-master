@@ -46,7 +46,7 @@ const validateSignup = [
         }),
 ];
 
-const validateNewFolder = [
+const validateFolderData = [
     body("name")
         .trim()
         .not()
@@ -69,5 +69,5 @@ const validateNewFolder = [
 
 module.exports = {
     validateSignup,
-    validateNewFolder,
+    validateFolderData,
 };

@@ -1,5 +1,4 @@
 const { PrismaClient } = require("../generated/prisma");
-const { connect } = require("../routes/router");
 const prisma = new PrismaClient();
 const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
 
@@ -54,6 +53,18 @@ async function addFolder(folderData) {
             },
         });
     }
+}
+
+async function updateFolder(folderData) {
+    await prisma.folder.update({
+        where: {
+            id: folderData.id,
+        },
+        data: {
+            name: folderData.name,
+            description: folderData.description,
+        },
+    });
 }
 
 async function deleteFolder(folderId) {
@@ -117,6 +128,7 @@ module.exports = {
     getUniqueUserByField,
 
     addFolder,
+    updateFolder,
     deleteFolder,
     getAllFolders,
     getFolderByFieldsCI,

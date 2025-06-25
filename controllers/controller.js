@@ -78,7 +78,7 @@ const addFolderPost = [
                 values: req.body,
                 errors: errorValues,
             };
-            res.redirect(`/folders/${folderId}/new`);
+            res.redirect(`/folders/${folderId}/create`);
         } else {
             await db.addFolder({
                 name: req.body.name,

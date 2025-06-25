@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
-const { validateSignup } = require("../validation/validation");
+const { validateSignup } = require("../middlewares/validation");
 const passport = require("passport");
 const db = require("../db/queries");
 

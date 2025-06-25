@@ -21,10 +21,10 @@
         <%= folders[key].description %>
     </p>
     <div class="d-flex mb-4 gap-3">
-        <a href="/folders/0/files/new" class="btn btn-primary btn-sm"
+        <a href="/folders/0/files/create" class="btn btn-primary btn-sm"
             ><i class="bi bi-file-plus"></i>&nbsp&nbspUpload a file</a
         >
-        <a href="/folders/<%= key %>/new" class="btn btn-warning btn-sm"
+        <a href="/folders/<%= key %>/create" class="btn btn-warning btn-sm"
             ><i class="bi bi-folder-plus"></i>&nbsp&nbspCreate a sub-folder</a
         >
         <% if (!folders[key].isHome) { %>
@@ -87,10 +87,4 @@
     </div>
 
     <%- include('../partials/folder') %>
-
-    <!-- <form class="card-body mb-4 border-success p-3" action="/newPost">
-        <button class="btn btn-primary btn-lg" <% if (!locals.user) { %>
-            disabled <% } %>> + New Post
-        </button>
-    </form> -->
 </div>

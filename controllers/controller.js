@@ -1,5 +1,5 @@
 const { validationResult } = require("express-validator");
-const { validateFolderData } = require("../validation/validation");
+const { validateFolderData } = require("../middlewares/validation");
 const db = require("../db/queries");
 const {
     ROOT_FOLDER_ID,
@@ -8,10 +8,7 @@ const {
 } = require("../utils/constants");
 
 const folderGet = async (req, res) => {
-    if (!req.user) return res.redirect("/login");
-
     let folders = await db.getAllFolders(req.user.id);
-    // console.log(folders);
     const { folderId } = req.params;
 
     let map = {};
@@ -42,12 +39,6 @@ const folderGet = async (req, res) => {
 };
 
 const newFolderGet = async (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).render("pages/error", {
-            message: "401 Unauthorized: You are not logged in.",
-        });
-    }
-
     const { folderId } = req.params;
     // check if user is trying to access another user's folder
     if (folderId !== ROOT_FOLDER_ID) {
@@ -100,14 +91,6 @@ const newFolderPost = [
 ];
 
 const editFolderGet = async (req, res) => {
-    console.log("edit folder GET");
-    // work here
-    if (!req.isAuthenticated()) {
-        return res.status(401).render("pages/error", {
-            message: "401 Unauthorized: You are not logged in.",
-        });
-    }
-
     const { folderId } = req.params;
     if (folderId === ROOT_FOLDER_ID) {
         return res.status(400).render("pages/error", {
@@ -142,7 +125,6 @@ const editFolderPost = [
     validateFolderData,
     async (req, res) => {
         const { folderId } = req.params;
-        console.log("edit folder POST");
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             errorValues = Object.fromEntries(
@@ -154,7 +136,6 @@ const editFolderPost = [
             };
             res.redirect(`/folders/${folderId}/edit`);
         } else {
-            console.log("updating the folder");
             await db.updateFolder({
                 id: folderId,
                 name: req.body.name,
@@ -166,16 +147,8 @@ const editFolderPost = [
 ];
 
 const deleteFolderPost = async (req, res) => {
-    db.deleteFolder(req.body.folderId);
+    await db.deleteFolder(req.body.folderId);
     res.redirect("/");
-};
-
-const newFileGet = async (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).render("pages/error", {
-            message: "401 Unauthorized: You are not logged in.",
-        });
-    }
 };
 
 module.exports = {
@@ -185,6 +158,4 @@ module.exports = {
     deleteFolderPost,
     editFolderGet,
     editFolderPost,
-
-    newFileGet,
 };

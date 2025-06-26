@@ -83,6 +83,7 @@ async function getAllFolders(userId) {
                 select: { id: true },
                 orderBy: { name: "asc" },
             },
+            files: true,
         },
         where: {
             ownerId: userId,
@@ -122,6 +123,67 @@ async function getFolderPathTo(id) {
     });
     return folderPath.reverse();
 }
+/*
+            name        String
+            description String?
+            size        Float
+            mimeType    String?
+            url         String?
+*/
+
+async function addFile(fileData) {
+    // await prisma.user.update({
+    //     where: {
+    //         id: fileData.userId,
+    //     },
+    //     data: {
+    //         files: {
+    //             create: {
+    //                 data: {
+    //                     name: fileData.name,
+    //                     description: fileData.description,
+    //                     size: fileData.size,
+    //                     mimeType: fileData.mimeType,
+    //                     url: fileData.url,
+    //                 },
+    //             },
+    //         },
+    //     },
+    // });
+
+    console.log("fileData from query function:");
+    console.log(fileData);
+
+    let newFile = await prisma.file.create({
+        data: {
+            name: fileData.name,
+            description: fileData.description,
+            size: fileData.size,
+            mimeType: fileData.mimeType,
+            url: fileData.url,
+            owner: {
+                connect: {
+                    id: fileData.ownerId,
+                },
+            },
+        },
+    });
+
+    if (fileData.folderId) {
+        await prisma.folder.update({
+            where: {
+                id: fileData.folderId,
+            },
+            data: {
+                files: {
+                    connect: {
+                        id: newFile.id,
+                    },
+                },
+            },
+        });
+    }
+}
 
 module.exports = {
     addUser,
@@ -133,6 +195,8 @@ module.exports = {
     getAllFolders,
     getFolderByFieldsCI,
     getFolderPathTo,
+
+    addFile,
 };
 
 async function resetFunction() {

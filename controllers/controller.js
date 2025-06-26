@@ -179,6 +179,27 @@ const addFilePost = [
         console.log(req.file);
 
         console.log(`Uploading a file to folder with id: ${folderId}`);
+        db.addFile({
+            name: req.file.originalname,
+            description: req.body.description,
+            size: req.file.size,
+            mimeType: req.file.mimetype,
+            url: "some url",
+            folderId: folderId === ROOT_FOLDER_ID ? null : folderId,
+            ownerId: req.user.id,
+        });
+        /*
+            name        String
+            description String?
+            size        Float
+            mimeType    String?
+            url         String?
+            uploadedAt  DateTime @default(now())
+            folder      Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
+            folderId    String?
+            owner       User     @relation(fields: [ownerId], references: [id])
+            ownerId     String
+        */
         res.redirect(`/folders/${folderId}`);
     },
 ];

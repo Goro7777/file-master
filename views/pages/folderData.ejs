@@ -7,11 +7,11 @@ action.slice(1)) + " Folder" }) %>
         <%= action %> <span class="text-warning">Folder</span>
     </h2>
     <form
-        class="card-body mb-4 ms-3"
+        class="mb-4 px-2"
         action="/folders/<%= locals.folderId %>/<%= locals.action %>"
         method="POST"
     >
-        <div class="mb-md-1 mt-md-1 pb-5 pt-2">
+        <div class="mb-md-1 mt-md-1">
             <div data-mdb-input-init class="form-outline form-white mb-4">
                 <label class="form-label fs-5" for="name">Name</label>
                 <input
@@ -42,19 +42,20 @@ action.slice(1)) + " Folder" }) %>
                 <div class="text-warning"><%= errors.description %></div>
                 <% } %>
             </div>
-
-            <button
-                class="btn btn-outline-success px-5 btn-lg text-capitalize"
-                type="submit"
-            >
-                <%= action %></button
-            >&nbsp&nbsp
-            <a
-                href="/folders/<%= locals.folderId %>"
-                class="btn btn btn-outline-dark px-5 btn-lg text-capitalize"
-            >
-                Cancel
-            </a>
+            <div class="mb-4">
+                <button
+                    class="btn btn-outline-success px-5 btn-lg text-capitalize"
+                    type="submit"
+                >
+                    <%= action %></button
+                >&nbsp&nbsp
+                <a
+                    href="/folders/<%= locals.folderId %>"
+                    class="btn btn btn-outline-dark px-5 btn-lg text-capitalize"
+                >
+                    Cancel
+                </a>
+            </div>
         </div>
     </form>
 </div>

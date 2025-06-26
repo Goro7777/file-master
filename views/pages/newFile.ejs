@@ -2,40 +2,58 @@
 <div class="col-12 col-md-11 col-lg-9 col-xl-7">
     <%-include('../partials/folderPath') %>
 
-    <h2 class="fw-bold mb-4 text-uppercase">
-        Upload a <span class="text-primary">File</span>
+    <h2 class="fw-bold mb-4 text-uppercase px-2">
+        Upload <span class="text-primary">File</span>
     </h2>
     <form
+        class="px-2"
         action="/folders/<%= locals.folderId %>/files/upload"
         method="POST"
         enctype="multipart/form-data"
     >
-        <label for="formFileMultiple" class="form-label"
-            >Upload your file</label
-        >
-        <input
-            class="form-control"
-            type="file"
-            id="formFileMultiple"
-            name="upload"
-        />
-        <% if (locals.error) { %>
-        <div class="text-warning"><%= error %></div>
-        <% } %>
-        <div class="mt-4">
-            <button
-                class="btn btn-outline-success px-5 text-capitalize"
-                type="submit"
-            >
-                Upload</button
-            >&nbsp&nbsp
-            <a
-                href="/folders/<%= locals.folderId %>"
-                class="btn btn-outline-dark px-5 text-capitalize"
-                type="submit"
-            >
-                Cancel
-            </a>
+        <div class="mb-md-1 mt-md-1">
+            <div class="fs-5 mb-4">
+                <label for="formFileMultiple" class="form-label"
+                    >Upload your file</label
+                >
+                <input
+                    class="form-control form-control-lg"
+                    type="file"
+                    id="formFileMultiple"
+                    name="upload"
+                />
+                <% if (locals.error) { %>
+                <div class="text-warning"><%= error %></div>
+                <% } %>
+            </div>
+            <div class="fs-5 mb-4">
+                <label class="form-label" for="description"
+                    >Description <i>(optional)</i></label
+                >
+                <textarea
+                    id="description"
+                    name="description"
+                    class="form-control border-success"
+                    rows="3"
+                >
+<%= locals.values?.description %></textarea
+                >
+            </div>
+            <div class="mb-4">
+                <button
+                    class="btn btn-outline-success btn-lg px-5 text-capitalize"
+                    type="submit"
+                >
+                    Upload</button
+                >&nbsp&nbsp
+                <a
+                    href="/folders/<%= locals.folderId %>"
+                    class="btn btn-outline-dark btn-lg px-5 text-capitalize"
+                    type="submit"
+                >
+                    Cancel
+                </a>
+            </div>
         </div>
     </form>
 </div>

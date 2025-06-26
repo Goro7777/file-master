@@ -152,6 +152,25 @@ const deleteFolderPost = async (req, res) => {
     res.redirect("/");
 };
 
+// files
+const showFileGet = async (req, res) => {
+    // userId, folderId, fileId
+    let { folderId, fileId } = req.params;
+
+    let file = await db.getFile(req.user.id, folderId, fileId);
+    file.size =
+        file.size < 1000
+            ? file.size + " bytes"
+            : file.size < 1000000
+            ? (file.size / 1000).toFixed(2) + " KB"
+            : (file.size / 1000000).toFixed(2) + " MB";
+    file.uploadedAt = file.uploadedAt.toLocaleString();
+    let folderPath = await db.getFolderPathTo(folderId);
+    console.log(file);
+
+    res.render("pages/file", { file, folderPath, folderId });
+};
+
 const addFileGet = async (req, res) => {
     const { folderId } = req.params;
     let folderPath = await db.getFolderPathTo(folderId);
@@ -176,9 +195,6 @@ const addFilePost = [
             return;
         }
 
-        console.log(req.file);
-
-        console.log(`Uploading a file to folder with id: ${folderId}`);
         db.addFile({
             name: req.file.originalname,
             description: req.body.description,
@@ -188,18 +204,6 @@ const addFilePost = [
             folderId: folderId === ROOT_FOLDER_ID ? null : folderId,
             ownerId: req.user.id,
         });
-        /*
-            name        String
-            description String?
-            size        Float
-            mimeType    String?
-            url         String?
-            uploadedAt  DateTime @default(now())
-            folder      Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
-            folderId    String?
-            owner       User     @relation(fields: [ownerId], references: [id])
-            ownerId     String
-        */
         res.redirect(`/folders/${folderId}`);
     },
 ];
@@ -212,6 +216,7 @@ module.exports = {
     editFolderGet,
     editFolderPost,
 
+    showFileGet,
     addFileGet,
     addFilePost,
 };

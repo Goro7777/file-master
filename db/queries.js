@@ -123,34 +123,19 @@ async function getFolderPathTo(id) {
     });
     return folderPath.reverse();
 }
-/*
-            name        String
-            description String?
-            size        Float
-            mimeType    String?
-            url         String?
-*/
+
+// files
+async function getFile(userId, folderId, fileId) {
+    return await prisma.file.findFirst({
+        where: {
+            id: fileId,
+            folderId: folderId,
+            ownerId: userId,
+        },
+    });
+}
 
 async function addFile(fileData) {
-    // await prisma.user.update({
-    //     where: {
-    //         id: fileData.userId,
-    //     },
-    //     data: {
-    //         files: {
-    //             create: {
-    //                 data: {
-    //                     name: fileData.name,
-    //                     description: fileData.description,
-    //                     size: fileData.size,
-    //                     mimeType: fileData.mimeType,
-    //                     url: fileData.url,
-    //                 },
-    //             },
-    //         },
-    //     },
-    // });
-
     console.log("fileData from query function:");
     console.log(fileData);
 
@@ -197,6 +182,7 @@ module.exports = {
     getFolderPathTo,
 
     addFile,
+    getFile,
 };
 
 async function resetFunction() {

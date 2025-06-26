@@ -24,6 +24,7 @@ model User {
   password  String
   joinedAt  DateTime @default(now())
   folders   Folder[]
+  files     File[]
 }
 
 model Folder {
@@ -35,15 +36,20 @@ model Folder {
   parentId    String?
   parent      Folder?  @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children    Folder[] @relation("ParentChildren")
-  owner       User?    @relation(fields: [ownerId], references: [id])
-  ownerId     String?
+  owner       User     @relation(fields: [ownerId], references: [id])
+  ownerId     String
 }
 
 model File {
-  id       String   @id @default(uuid())
-  name     String
-  size     Float
-  uploaded DateTime @default(now())
-  Folder   Folder?  @relation(fields: [folderId], references: [id])
-  folderId String?
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  size        Float
+  mimeType    String?
+  url         String?
+  uploadedAt  DateTime @default(now())
+  folder      Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId    String?
+  owner       User     @relation(fields: [ownerId], references: [id])
+  ownerId     String
 }

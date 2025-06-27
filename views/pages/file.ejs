@@ -38,7 +38,9 @@
         </div>
     </div>
 
-    <a href="" class="btn btn-primary btn-sm"
+    <a
+        href="/folders/<%= folderId %>/files/<%= file.id %>/download"
+        class="btn btn-primary btn-sm"
         ><i class="bi bi-file-plus"></i>&nbsp&nbspDownload the file</a
     >
     <a href="" class="btn btn-warning btn-sm"
@@ -82,7 +84,7 @@
                 </div>
                 <div class="modal-footer">
                     <form
-                        action="/folders/<%= folderId %>/files/delete"
+                        action="/folders/<%= folderId %>/files/<%= file.id %>/delete"
                         method="POST"
                     >
                         <input

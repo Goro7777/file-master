@@ -25,6 +25,10 @@ router.post("/folders/:folderId/edit", ...controller.editFolderPost);
 router.get("/folders/:folderId/files/upload", controller.addFileGet);
 router.post("/folders/:folderId/files/upload", ...controller.addFilePost);
 router.get("/folders/:folderId/files/:fileId", controller.showFileGet);
+router.get(
+    "/folders/:folderId/files/:fileId/download",
+    controller.downloadFileGet
+);
 
 // GET  /folders/:folderId/files/:fileId        READ FILE GET
 // GET  /folders/:folderId/files/create         CREATE FILE GET

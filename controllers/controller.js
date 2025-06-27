@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const { validateFolderData } = require("../middlewares/validation");
 const db = require("../db/queries");
+const sb = require("../storage/queries");
 const {
     ROOT_FOLDER_ID,
     ROOT_FOLDER_NAME,
@@ -158,7 +159,6 @@ const deleteFolderPost = async (req, res) => {
 
 // files
 const showFileGet = async (req, res) => {
-    // userId, folderId, fileId
     let { folderId, fileId } = req.params;
 
     let file = await db.getFile(req.user.id, folderId, fileId);
@@ -188,8 +188,9 @@ const addFilePost = [
     upload.single("upload"),
     async (req, res) => {
         const { folderId } = req.params;
+        const { file } = req;
 
-        if (!req.file) {
+        if (!file) {
             console.log("no file uploaded");
             req.session.redirectData = {
                 error: "No file uploaded.",
@@ -198,18 +199,37 @@ const addFilePost = [
             return;
         }
 
-        db.addFile({
-            name: req.file.originalname,
+        console.log("---- Storing file in storage");
+        sb.upload(req.user, file);
+        console.log("---- Successfully stored files in storage");
+
+        await db.addFile({
+            name: file.originalname,
             description: req.body.description,
-            size: req.file.size,
-            mimeType: req.file.mimetype,
+            size: file.size,
+            mimeType: file.mimetype,
             url: "some url",
             folderId: folderId === ROOT_FOLDER_ID ? null : folderId,
             ownerId: req.user.id,
         });
+
         res.redirect(`/folders/${folderId}`);
     },
 ];
+
+const downloadFileGet = async (req, res) => {
+    console.log("downloading the file");
+    let { folderId, fileId } = req.params;
+    let file = await db.getFile(req.user.id, folderId, fileId);
+    console.log("file from db:");
+    console.log(file);
+
+    // const { data: blob, error: error2 } = await supabase.storage
+    //     .from("uploads")
+    //     .download(req.user.username + "/" + file.originalname);
+
+    res.redirect(`/folders/${folderId}/files/${fileId}`);
+};
 
 module.exports = {
     showFolderGet,
@@ -222,4 +242,5 @@ module.exports = {
     showFileGet,
     addFileGet,
     addFilePost,
+    downloadFileGet,
 };

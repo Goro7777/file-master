@@ -8,8 +8,8 @@ const {
 } = require("../utils/constants");
 const { supabase, upload } = require("../storage/config");
 
+// folders
 const showFolderGet = async (req, res) => {
-    // add home folder files
     let folders = await db.getAllFolders(req.user.id);
     let homeFiles = await db.getFilesWithNoFolder(req.user.id);
 

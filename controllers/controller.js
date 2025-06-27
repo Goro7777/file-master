@@ -9,7 +9,10 @@ const {
 const { supabase, upload } = require("../storage/config");
 
 const showFolderGet = async (req, res) => {
+    // add home folder files
     let folders = await db.getAllFolders(req.user.id);
+    let homeFiles = await db.getFilesWithNoFolder(req.user.id);
+
     const { folderId } = req.params;
 
     let map = {};
@@ -20,6 +23,7 @@ const showFolderGet = async (req, res) => {
             description: ROOT_FOLDER_DESCRIPTION,
             children: [],
             isHome: true,
+            files: homeFiles,
         };
     }
     for (let folder of folders) {
@@ -166,7 +170,6 @@ const showFileGet = async (req, res) => {
             : (file.size / 1000000).toFixed(2) + " MB";
     file.uploadedAt = file.uploadedAt.toLocaleString();
     let folderPath = await db.getFolderPathTo(folderId);
-    console.log(file);
 
     res.render("pages/file", { file, folderPath, folderId });
 };

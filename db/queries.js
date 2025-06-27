@@ -1,6 +1,12 @@
-const { PrismaClient } = require("../generated/prisma");
+const { PrismaClient, Prisma } = require("../generated/prisma");
 const prisma = new PrismaClient();
 const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
+
+async function f() {
+    let files = await prisma.file.findMany();
+    console.log("---------------- All Files ----------------");
+    console.log(files);
+}
 
 // users
 async function addUser(user) {
@@ -77,6 +83,7 @@ async function deleteFolder(folderId) {
 
 async function getAllFolders(userId) {
     // await prisma.folder.deleteMany();
+    f();
     return await prisma.folder.findMany({
         include: {
             children: {
@@ -135,6 +142,15 @@ async function getFile(userId, folderId, fileId) {
     });
 }
 
+async function getFilesWithNoFolder(userId) {
+    return await prisma.file.findMany({
+        where: {
+            ownerId: userId,
+            folder: null,
+        },
+    });
+}
+
 async function addFile(fileData) {
     console.log("fileData from query function:");
     console.log(fileData);
@@ -183,6 +199,7 @@ module.exports = {
 
     addFile,
     getFile,
+    getFilesWithNoFolder,
 };
 
 async function resetFunction() {

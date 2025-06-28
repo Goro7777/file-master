@@ -230,7 +230,7 @@ const addFilePost = [
 ];
 
 const downloadFileGet = async (req, res) => {
-    let { folderId, fileId } = req.params;
+    let { fileId } = req.params;
     let file = await db.getFile(req.user.id, fileId);
 
     const { data: blob } = await supabase.storage
@@ -242,6 +242,16 @@ const downloadFileGet = async (req, res) => {
     res.setHeader("Content-Type", file.mimeType);
     res.setHeader("Content-Disposition", `attachment; filename=${file.name}`);
     res.send(buffer);
+};
+
+const deleteFileGet = async (req, res) => {
+    let { fileId, folderId } = req.params;
+    let { name: fileName } = req.body;
+
+    await db.deleteFile(req.user.id, fileId);
+    await sb.remove(req.user.username, [fileName]);
+
+    res.redirect(`/folders/${folderId}`);
 };
 
 module.exports = {
@@ -256,4 +266,5 @@ module.exports = {
     addFileGet,
     addFilePost,
     downloadFileGet,
+    deleteFileGet,
 };

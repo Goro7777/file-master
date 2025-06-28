@@ -1,4 +1,4 @@
-const authChecker = (req, res, next) => {
+const checkAuth = (req, res, next) => {
     if (!req.isAuthenticated()) {
         console.log("not authenticated");
         return res.redirect("/login");
@@ -7,5 +7,5 @@ const authChecker = (req, res, next) => {
 };
 
 module.exports = {
-    authChecker,
+    checkAuth,
 };

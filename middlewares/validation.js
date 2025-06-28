@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
 const db = require("../db/queries");
-const { isEmpty } = require("lodash");
+const { ROOT_FOLDER_ID } = require("../utils/constants");
 
 const validateSignup = [
     body("username")
@@ -54,7 +54,9 @@ const validateFolderData = [
         .isEmpty()
         .withMessage("Folder name cannot be empty.")
         .custom(async (value, { req }) => {
-            const { folderId } = req.params;
+            let { folderId } = req.params;
+            if (folderId === ROOT_FOLDER_ID) folderId = null;
+
             let sameNameSibling = await db.getFolderByFieldsCI([
                 ["parentId", folderId],
                 ["name", value],
@@ -72,6 +74,7 @@ const validateFileData = [
     body("upload").custom(async (value, { req }) => {
         let file = req.file;
         let folderId = req.params.folderId;
+        if (folderId === ROOT_FOLDER_ID) folderId = null;
 
         let fileExists = await db.getFileByName(
             req.user.id,

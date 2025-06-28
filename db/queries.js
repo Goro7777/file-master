@@ -1,4 +1,4 @@
-const { PrismaClient, Prisma } = require("../generated/prisma");
+const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
 
@@ -141,7 +141,7 @@ async function getFile(userId, fileId) {
 async function getFiles(userId, folderId) {
     return await prisma.file.findMany({
         where: {
-            folderId,
+            folderId: folderId,
             ownerId: userId,
         },
         orderBy: {

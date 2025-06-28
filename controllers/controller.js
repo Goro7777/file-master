@@ -159,8 +159,15 @@ const editFolderPost = [
 ];
 
 const deleteFolderPost = async (req, res) => {
-    await db.deleteFolder(req.body.folderId);
-    // delete from storage
+    let { folderId } = req.body;
+    console.log(folderId);
+
+    let files = await db.getFiles(req.user.id, folderId);
+    let filesNames = files.map((file) => file.name);
+
+    await sb.remove(req.user.username, filesNames);
+    await db.deleteFolder(folderId);
+
     res.redirect("/");
 };
 
@@ -207,7 +214,7 @@ const addFilePost = [
         }
 
         const { file } = req;
-        sb.upload(req.user, file);
+        await sb.upload(req.user.username, file.originalname, file.buffer);
 
         await db.addFile({
             name: file.originalname,

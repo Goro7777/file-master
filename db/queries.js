@@ -182,6 +182,16 @@ async function addFile(fileData) {
     }
 }
 
+async function getFileByName(userId, folderId, fileName) {
+    return await prisma.file.findFirst({
+        where: {
+            ownerId: userId,
+            folderId: folderId,
+            name: fileName,
+        },
+    });
+}
+
 module.exports = {
     addUser,
     getUniqueUserByField,
@@ -196,6 +206,7 @@ module.exports = {
     addFile,
     getFile,
     getFiles,
+    getFileByName,
 };
 
 async function resetFunction() {

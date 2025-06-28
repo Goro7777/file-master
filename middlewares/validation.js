@@ -73,10 +73,11 @@ const validateFileData = [
         let file = req.file;
         let folderId = req.params.folderId;
 
-        let fileExists = await db.getFile({
+        let fileExists = await db.getFileByName(
+            req.user.id,
             folderId,
-            name: file.originalname,
-        });
+            file.originalname
+        );
 
         if (fileExists)
             throw new Error(

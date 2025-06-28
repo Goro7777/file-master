@@ -191,7 +191,6 @@ const addFilePost = [
         const { file } = req;
 
         if (!file) {
-            console.log("no file uploaded");
             req.session.redirectData = {
                 error: "No file uploaded.",
             };
@@ -199,9 +198,7 @@ const addFilePost = [
             return;
         }
 
-        console.log("---- Storing file in storage");
         sb.upload(req.user, file);
-        console.log("---- Successfully stored files in storage");
 
         await db.addFile({
             name: file.originalname,
@@ -218,17 +215,18 @@ const addFilePost = [
 ];
 
 const downloadFileGet = async (req, res) => {
-    console.log("downloading the file");
     let { folderId, fileId } = req.params;
     let file = await db.getFile(req.user.id, folderId, fileId);
-    console.log("file from db:");
-    console.log(file);
 
-    // const { data: blob, error: error2 } = await supabase.storage
-    //     .from("uploads")
-    //     .download(req.user.username + "/" + file.originalname);
+    const { data: blob } = await supabase.storage
+        .from("uploads")
+        .download(req.user.username + "/" + file.name);
 
-    res.redirect(`/folders/${folderId}/files/${fileId}`);
+    let buffer = Buffer.from(await blob.arrayBuffer());
+
+    res.setHeader("Content-Type", file.mimeType);
+    res.setHeader("Content-Disposition", `attachment; filename=${file.name}`);
+    res.send(buffer);
 };
 
 module.exports = {

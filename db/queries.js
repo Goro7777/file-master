@@ -129,17 +129,23 @@ async function getFolderPathTo(id) {
 }
 
 // files
-async function getFile(conditions) {
+async function getFile(userId, fileId) {
     return await prisma.file.findFirst({
-        where: conditions,
+        where: {
+            ownerId: userId,
+            id: fileId,
+        },
     });
 }
 
-async function getFilesWithNoFolder(userId) {
+async function getFiles(userId, folderId) {
     return await prisma.file.findMany({
         where: {
+            folderId,
             ownerId: userId,
-            folder: null,
+        },
+        orderBy: {
+            name: "asc",
         },
     });
 }
@@ -189,7 +195,7 @@ module.exports = {
 
     addFile,
     getFile,
-    getFilesWithNoFolder,
+    getFiles,
 };
 
 async function resetFunction() {

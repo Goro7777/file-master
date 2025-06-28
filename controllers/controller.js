@@ -14,13 +14,16 @@ const { supabase, upload } = require("../storage/config");
 
 // folders
 const showFolderGet = async (req, res) => {
-    let folders = await db.getAllFolders(req.user.id);
-    let homeFiles = await db.getFilesWithNoFolder(req.user.id);
-
     const { folderId } = req.params;
+    let folders = await db.getAllFolders(req.user.id);
 
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
+        let homeFiles = await db.getFiles(
+            req.user.id,
+            folderId === ROOT_FOLDER_ID ? null : folderId
+        );
+
         map[ROOT_FOLDER_ID] = {
             id: ROOT_FOLDER_ID,
             name: ROOT_FOLDER_NAME,
@@ -165,7 +168,7 @@ const deleteFolderPost = async (req, res) => {
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
-    let file = await db.getFile(req.user.id, folderId, fileId);
+    let file = await db.getFile(req.user.id, fileId);
     file.size =
         file.size < 1000
             ? file.size + " bytes"
@@ -221,7 +224,7 @@ const addFilePost = [
 
 const downloadFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
-    let file = await db.getFile(req.user.id, folderId, fileId);
+    let file = await db.getFile(req.user.id, fileId);
 
     const { data: blob } = await supabase.storage
         .from("uploads")

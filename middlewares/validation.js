@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const db = require("../db/queries");
+const { isEmpty } = require("lodash");
 
 const validateSignup = [
     body("username")
@@ -67,7 +68,27 @@ const validateFolderData = [
         }),
 ];
 
+const validateFileData = [
+    body("upload").custom(async (value, { req }) => {
+        let file = req.file;
+        let folderId = req.params.folderId;
+
+        let fileExists = await db.getFile({
+            folderId,
+            name: file.originalname,
+        });
+
+        if (fileExists)
+            throw new Error(
+                "A file with such a name already exists in the folder"
+            );
+
+        return true;
+    }),
+];
+
 module.exports = {
     validateSignup,
     validateFolderData,
+    validateFileData,
 };

@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
-const { validateFolderData } = require("../middlewares/validation");
+const {
+    validateFolderData,
+    validateFileData,
+} = require("../middlewares/validation");
 const db = require("../db/queries");
 const sb = require("../storage/queries");
 const {
@@ -154,6 +157,7 @@ const editFolderPost = [
 
 const deleteFolderPost = async (req, res) => {
     await db.deleteFolder(req.body.folderId);
+    // delete from storage
     res.redirect("/");
 };
 
@@ -186,18 +190,20 @@ const addFileGet = async (req, res) => {
 
 const addFilePost = [
     upload.single("upload"),
+    validateFileData,
     async (req, res) => {
         const { folderId } = req.params;
-        const { file } = req;
 
-        if (!file) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
             req.session.redirectData = {
-                error: "No file uploaded.",
+                error: errors.errors[0].msg,
             };
             res.redirect(`/folders/${folderId}/files/upload`);
             return;
         }
 
+        const { file } = req;
         sb.upload(req.user, file);
 
         await db.addFile({
@@ -205,7 +211,6 @@ const addFilePost = [
             description: req.body.description,
             size: file.size,
             mimeType: file.mimetype,
-            url: "some url",
             folderId: folderId === ROOT_FOLDER_ID ? null : folderId,
             ownerId: req.user.id,
         });

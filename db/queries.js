@@ -85,7 +85,9 @@ async function getAllFolders(userId) {
                 select: { id: true },
                 orderBy: { name: "asc" },
             },
-            files: true,
+            files: {
+                orderBy: { name: "asc" },
+            },
         },
         where: {
             ownerId: userId,
@@ -94,9 +96,9 @@ async function getAllFolders(userId) {
     });
 }
 
-async function getFolderByFieldsCI(entries) {
+async function getFolderByFieldsCI(fields) {
     let conditions = {};
-    for (let [key, value] of entries) {
+    for (let [key, value] of fields) {
         conditions[key] = {
             equals: value,
             mode: "insensitive",
@@ -127,13 +129,9 @@ async function getFolderPathTo(id) {
 }
 
 // files
-async function getFile(userId, folderId, fileId) {
+async function getFile(conditions) {
     return await prisma.file.findFirst({
-        where: {
-            id: fileId,
-            folderId: folderId,
-            ownerId: userId,
-        },
+        where: conditions,
     });
 }
 

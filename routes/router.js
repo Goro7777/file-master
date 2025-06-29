@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/authController");
+const authCont = require("../controllers/auth");
+const folderCont = require("../controllers/folder");
 const controller = require("../controllers/controller");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 const { checkAuth } = require("../middlewares/auth");
@@ -9,18 +10,18 @@ router.get("/", checkAuth, (req, res) =>
     res.redirect(`/folders/${ROOT_FOLDER_ID}`)
 );
 
-router.get("/login", authController.loginGet);
-router.post("/login", authController.loginPost);
-router.get("/logout", authController.logoutGet);
-router.get("/sign-up", authController.signupGet);
-router.post("/sign-up", ...authController.signupPost);
+router.get("/login", authCont.loginGet);
+router.post("/login", authCont.loginPost);
+router.get("/logout", authCont.logoutGet);
+router.get("/sign-up", authCont.signupGet);
+router.post("/sign-up", ...authCont.signupPost);
 
-router.get("/folders/:folderId", checkAuth, controller.showFolderGet);
-router.get("/folders/:folderId/create", checkAuth, controller.addFolderGet);
-router.post("/folders/:folderId/create", ...controller.addFolderPost);
-router.post("/folders/delete", controller.deleteFolderPost);
-router.get("/folders/:folderId/edit", checkAuth, controller.editFolderGet);
-router.post("/folders/:folderId/edit", ...controller.editFolderPost);
+router.get("/folders/:folderId", checkAuth, folderCont.showFolderGet);
+router.get("/folders/:folderId/create", checkAuth, folderCont.addFolderGet);
+router.post("/folders/:folderId/create", ...folderCont.addFolderPost);
+router.post("/folders/delete", folderCont.deleteFolderPost);
+router.get("/folders/:folderId/edit", checkAuth, folderCont.editFolderGet);
+router.post("/folders/:folderId/edit", ...folderCont.editFolderPost);
 
 router.get("/folders/:folderId/files/upload", checkAuth, controller.addFileGet);
 router.post("/folders/:folderId/files/upload", ...controller.addFilePost);
@@ -38,14 +39,5 @@ router.post(
     "/folders/:folderId/files/:fileId/delete",
     controller.deleteFileGet
 );
-
-// GET  /folders/:folderId/files/:fileId        READ FILE GET
-// GET  /folders/:folderId/files/create         CREATE FILE GET
-// POST /folders/:folderId/files/create         CREATE FILE POST
-
-// GET  /folders/:folderId/:folderId            READ FOLDER GET
-// GET  /folders/:folderId/create               CREATE FOLDER GET
-// POST /folders/:folderId/create               CREATE FOLDER POST
-// POST /folders/delete                         DELETE FOLDER GET
 
 module.exports = router;

@@ -12,18 +12,33 @@ async function add(user) {
     });
 }
 
-// split into getByUsername, getByEmail, getById
-async function getUniqueByField(fieldName, fieldValue) {
-    const user = await prisma.user.findUnique({
+async function get(id) {
+    return await prisma.user.findUnique({
         where: {
-            [fieldName]: fieldValue,
+            id: id,
         },
     });
+}
 
-    return user;
+async function getByUsername(username) {
+    return await prisma.user.findUnique({
+        where: {
+            username: username,
+        },
+    });
+}
+
+async function getByEmail(email) {
+    return await prisma.user.findUnique({
+        where: {
+            email: email,
+        },
+    });
 }
 
 module.exports = {
+    get,
+    getByUsername,
+    getByEmail,
     add,
-    getUniqueByField,
 };

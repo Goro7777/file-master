@@ -6,7 +6,7 @@ const dbUser = require("../db/user");
 passport.use(
     new LocalStrategy(async (username, password, done) => {
         try {
-            let user = await dbUser.getUniqueByField("username", username);
+            let user = await dbUser.getByUsername(username);
             // console.log(user);
             if (!user) {
                 // no error, don't let in
@@ -36,7 +36,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await dbUser.getUniqueByField("id", id);
+        const user = await dbUser.get(id);
         done(null, user);
     } catch (err) {
         done(err);

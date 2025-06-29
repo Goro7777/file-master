@@ -19,7 +19,7 @@ router.post("/sign-up", ...authCont.signupPost);
 router.get("/folders/:folderId", checkAuth, foldCont.showFolderGet);
 router.get("/folders/:folderId/create", checkAuth, foldCont.addFolderGet);
 router.post("/folders/:folderId/create", ...foldCont.addFolderPost);
-router.post("/folders/delete", foldCont.deleteFolderPost);
+router.post("/folders/:folderId/delete", foldCont.deleteFolderPost);
 router.get("/folders/:folderId/edit", checkAuth, foldCont.editFolderGet);
 router.post("/folders/:folderId/edit", ...foldCont.editFolderPost);
 

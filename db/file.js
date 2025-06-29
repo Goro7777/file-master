@@ -33,7 +33,6 @@ async function getAll(userId, folderId) {
 }
 
 async function getAllNested(userId, folderId) {
-    console.log("getting all nested files");
     if (!folderId) {
         return await prisma.file.findMany({
             select: {

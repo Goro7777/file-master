@@ -67,7 +67,7 @@
                         contents?<br />This action cannot be undone.
                     </div>
                     <div class="modal-footer">
-                        <form action="/folders/delete" method="POST">
+                        <form action="/folders/<%= key %>/delete" method="POST">
                             <input
                                 type="hidden"
                                 name="folderId"

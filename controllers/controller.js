@@ -4,6 +4,7 @@ const {
     validateFileData,
 } = require("../middlewares/validation");
 const db = require("../db/queries");
+const dbFolder = require("../db/folder");
 const sb = require("../storage/queries");
 const {
     ROOT_FOLDER_ID,
@@ -15,21 +16,18 @@ const { supabase, upload } = require("../storage/config");
 // folders
 const showFolderGet = async (req, res) => {
     const { folderId } = req.params;
-    let folders = await db.getAllFolders(req.user.id);
+    let folders = await dbFolder.getAll(req.user.id);
 
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
-        let homeFiles = await db.getFiles(
-            req.user.id,
-            folderId === ROOT_FOLDER_ID ? null : folderId
-        );
+        let homeFiles = await db.getFiles(req.user.id, null);
 
         map[ROOT_FOLDER_ID] = {
             id: ROOT_FOLDER_ID,
             name: ROOT_FOLDER_NAME,
             description: ROOT_FOLDER_DESCRIPTION,
             children: [],
-            isHome: true,
+            noDelete: true,
             files: homeFiles,
         };
     }
@@ -41,7 +39,7 @@ const showFolderGet = async (req, res) => {
     }
     map[folderId].isRoot = true;
 
-    let folderPath = await db.getFolderPathTo(folderId);
+    let folderPath = await getFolderPath(folderId);
 
     res.render("pages/folder", {
         folders: map,
@@ -54,14 +52,14 @@ const addFolderGet = async (req, res) => {
     const { folderId } = req.params;
     // check if user is trying to access another user's folder
     if (folderId !== ROOT_FOLDER_ID) {
-        let folder = await db.getFolderByFieldsCI([["id", folderId]]);
+        let folder = await dbFolder.get(folderId);
         if (!folder || folder.ownerId !== req.user.id) {
             return res.status(404).render("pages/error", {
                 message: "404 Not Found: You do not have such a folder.",
             });
         }
     }
-    let folderPath = await db.getFolderPathTo(folderId);
+    let folderPath = await getFolderPath(folderId);
 
     let { values, errors } = req.session.redirectData || {};
     req.session.redirectData = null;
@@ -91,10 +89,10 @@ const addFolderPost = [
             };
             res.redirect(`/folders/${folderId}/create`);
         } else {
-            await db.addFolder({
+            await dbFolder.add({
                 name: req.body.name,
                 description: req.body.description,
-                parentId: folderId === ROOT_FOLDER_ID ? undefined : folderId,
+                parentId: folderId !== ROOT_FOLDER_ID ? folderId : null,
                 ownerId: req.user.id,
             });
             res.redirect(`/folders/${folderId}`);
@@ -111,14 +109,14 @@ const editFolderGet = async (req, res) => {
     }
 
     // check if user is trying to access another user's folder
-    let folder = await db.getFolderByFieldsCI([["id", folderId]]);
+    let folder = await dbFolder.get(folderId);
     if (!folder || folder.ownerId !== req.user.id) {
         return res.status(404).render("pages/error", {
             message: "404 Not Found: You do not have such a folder.",
         });
     }
 
-    let folderPath = await db.getFolderPathTo(folderId);
+    let folderPath = await getFolderPath(folderId);
     let { values, errors } = req.session.redirectData || {};
     if (!req.session.redirectData)
         values = { name: folder.name, description: folder.description };
@@ -148,7 +146,7 @@ const editFolderPost = [
             };
             res.redirect(`/folders/${folderId}/edit`);
         } else {
-            await db.updateFolder({
+            await dbFolder.update({
                 id: folderId,
                 name: req.body.name,
                 description: req.body.description,
@@ -164,7 +162,7 @@ const deleteFolderPost = async (req, res) => {
     let files = await db.getFilesNested(req.user.id, folderId);
 
     await sb.remove(req.user.username, files);
-    await db.deleteFolder(folderId);
+    await dbFolder.remove(folderId);
 
     res.redirect("/");
 };
@@ -181,14 +179,14 @@ const showFileGet = async (req, res) => {
             ? (file.size / 1000).toFixed(2) + " KB"
             : (file.size / 1000000).toFixed(2) + " MB";
     file.uploadedAt = file.uploadedAt.toLocaleString();
-    let folderPath = await db.getFolderPathTo(folderId);
+    let folderPath = await getFolderPath(folderId);
 
     res.render("pages/file", { file, folderPath, folderId });
 };
 
 const addFileGet = async (req, res) => {
     const { folderId } = req.params;
-    let folderPath = await db.getFolderPathTo(folderId);
+    let folderPath = await getFolderPath(folderId);
 
     let { error } = req.session.redirectData || {};
     req.session.redirectData = null;
@@ -272,3 +270,12 @@ module.exports = {
     downloadFileGet,
     deleteFileGet,
 };
+
+async function getFolderPath(folderId) {
+    let folderPath = await dbFolder.getPath(folderId);
+    folderPath.push({
+        name: ROOT_FOLDER_NAME,
+        id: ROOT_FOLDER_ID,
+    });
+    return folderPath.reverse();
+}

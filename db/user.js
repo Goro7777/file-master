@@ -1,4 +1,4 @@
-const { prisma } = require("./client");
+const prisma = require("./config");
 
 async function add(user) {
     await prisma.user.create({
@@ -12,6 +12,7 @@ async function add(user) {
     });
 }
 
+// split into getByUsername, getByEmail, getById
 async function getUniqueByField(fieldName, fieldValue) {
     const user = await prisma.user.findUnique({
         where: {

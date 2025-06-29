@@ -1,108 +1,5 @@
-const { prisma } = require("./client");
-const { ROOT_FOLDER_ID, ROOT_FOLDER_NAME } = require("../utils/constants");
-
-// folders
-async function addFolder(folderData) {
-    let newFolder = await prisma.folder.create({
-        data: {
-            name: folderData.name,
-            description: folderData.description,
-            owner: {
-                connect: {
-                    id: folderData.ownerId,
-                },
-            },
-        },
-    });
-
-    if (folderData.parentId) {
-        await prisma.folder.update({
-            where: {
-                id: folderData.parentId,
-            },
-            data: {
-                children: {
-                    connect: {
-                        id: newFolder.id,
-                    },
-                },
-            },
-        });
-    }
-}
-
-async function updateFolder(folderData) {
-    await prisma.folder.update({
-        where: {
-            id: folderData.id,
-        },
-        data: {
-            name: folderData.name,
-            description: folderData.description,
-        },
-    });
-}
-
-async function deleteFolder(folderId) {
-    await prisma.folder.delete({
-        where: {
-            id: folderId,
-        },
-    });
-}
-
-async function getAllFolders(userId) {
-    // await prisma.folder.deleteMany();
-    // await prisma.file.deleteMany();
-
-    return await prisma.folder.findMany({
-        include: {
-            children: {
-                select: { id: true },
-                orderBy: { name: "asc" },
-            },
-            files: {
-                orderBy: { name: "asc" },
-            },
-        },
-        where: {
-            ownerId: userId,
-        },
-        orderBy: { name: "asc" },
-    });
-}
-
-async function getFolderByFieldsCI(fields) {
-    let conditions = {};
-    for (let [key, value] of fields) {
-        conditions[key] = {
-            equals: value,
-            mode: "insensitive",
-        };
-    }
-    return await prisma.folder.findFirst({
-        where: conditions,
-    });
-}
-
-async function getFolderPathTo(id) {
-    let folderPath = await prisma.$queryRaw`
-    WITH RECURSIVE bottom_up AS
-    (
-    SELECT F."parentId", F."name", F."id" FROM "Folder" AS F WHERE F."id"=${id}
-    UNION
-    SELECT f."parentId", f."name", f."id" FROM bottom_up
-    INNER JOIN "Folder" AS f
-    ON bottom_up."parentId" = f."id"
-    )
-    SELECT * FROM bottom_up;
-    `;
-    folderPath.push({
-        name: ROOT_FOLDER_NAME,
-        id: ROOT_FOLDER_ID,
-    });
-    return folderPath.reverse();
-}
+const prisma = require("./config");
+const { ROOT_FOLDER_ID } = require("../utils/constants");
 
 // files
 async function getFile(userId, fileId) {
@@ -211,13 +108,6 @@ async function deleteFile(userId, fileId) {
 }
 
 module.exports = {
-    addFolder,
-    updateFolder,
-    deleteFolder,
-    getAllFolders,
-    getFolderByFieldsCI,
-    getFolderPathTo,
-
     addFile,
     getFile,
     getFiles,

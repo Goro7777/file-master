@@ -1,5 +1,7 @@
 const { body } = require("express-validator");
 const dbUser = require("../db/user");
+const db = require("../db/queries");
+const dbFolder = require("../db/folder");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 
 const validateSignup = [
@@ -57,15 +59,11 @@ const validateFolderData = [
             let { folderId } = req.params;
             if (folderId === ROOT_FOLDER_ID) folderId = null;
 
-            let sameNameSibling = await db.getFolderByFieldsCI([
-                ["parentId", folderId],
-                ["name", value],
-            ]);
+            let nameUsed = await dbFolder.hasChildName(folderId, value);
 
-            if (sameNameSibling)
-                throw new Error(
-                    "Folder name already in user in current folder"
-                );
+            if (nameUsed)
+                throw new Error("Folder name already in use in current folder");
+
             return true;
         }),
 ];

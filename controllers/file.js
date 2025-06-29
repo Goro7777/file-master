@@ -6,7 +6,6 @@ const { ROOT_FOLDER_ID } = require("../utils/constants");
 const { upload } = require("../storage/config");
 const { getFolderPath } = require("./folder");
 
-// files
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 

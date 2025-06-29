@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const { validateSignup } = require("../middlewares/validation");
 const passport = require("passport");
-const db = require("../db/queries");
+const dbUser = require("../db/user");
 
 const loginGet = async (req, res) => {
     if (req.isAuthenticated()) {
@@ -74,7 +74,7 @@ const signupPost = [
             let hashedPassword = await bcrypt.hash(user.password, 10);
             user.hashedPassword = hashedPassword;
             user.joinedOn = new Date();
-            await db.addUser(user);
+            await dbUser.add(user);
             res.redirect("/login");
         }
     },

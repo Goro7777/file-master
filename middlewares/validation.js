@@ -1,12 +1,12 @@
 const { body } = require("express-validator");
-const db = require("../db/queries");
+const dbUser = require("../db/user");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 
 const validateSignup = [
     body("username")
         .trim()
         .custom(async (value) => {
-            let usernameTaken = await db.getUniqueUserByField(
+            let usernameTaken = await dbUser.getUniqueByField(
                 "username",
                 value
             );
@@ -29,7 +29,7 @@ const validateSignup = [
         .isEmail()
         .withMessage("Not a valid e-mail address")
         .custom(async (value) => {
-            let emailTaken = await db.getUniqueUserByField("email", value);
+            let emailTaken = await dbUser.getUniqueByField("email", value);
             if (emailTaken) throw new Error("E-mail already in use");
 
             return true;

@@ -236,10 +236,11 @@ const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
     let file = await db.getFile(req.user.id, fileId);
 
-    const { data: blob } = await supabase.storage
-        .from("uploads")
-        .download(req.user.username + "/" + file.name);
-
+    const { data: blob } = await sb.download(
+        req.user.username,
+        file.name,
+        fileId
+    );
     let buffer = Buffer.from(await blob.arrayBuffer());
 
     res.setHeader("Content-Type", file.mimeType);

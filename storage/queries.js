@@ -17,7 +17,14 @@ async function remove(username, files) {
         );
 }
 
+async function download(username, fileName, fileId) {
+    return await supabase.storage
+        .from("uploads")
+        .download(username + "/" + fileName + "_" + fileId);
+}
+
 module.exports = {
     upload,
     remove,
+    download,
 };

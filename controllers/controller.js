@@ -3,8 +3,8 @@ const {
     validateFolderData,
     validateFileData,
 } = require("../middlewares/validation");
-const db = require("../db/queries");
 const dbFolder = require("../db/folder");
+const dbFile = require("../db/file");
 const sb = require("../storage/queries");
 const {
     ROOT_FOLDER_ID,
@@ -20,7 +20,7 @@ const showFolderGet = async (req, res) => {
 
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
-        let homeFiles = await db.getFiles(req.user.id, null);
+        let homeFiles = await dbFile.getAll(req.user.id, null);
 
         map[ROOT_FOLDER_ID] = {
             id: ROOT_FOLDER_ID,
@@ -159,7 +159,10 @@ const editFolderPost = [
 const deleteFolderPost = async (req, res) => {
     let { folderId } = req.body;
 
-    let files = await db.getFilesNested(req.user.id, folderId);
+    let files = await dbFile.getAllNested(
+        req.user.id,
+        folderId !== ROOT_FOLDER_ID ? folderId : null
+    );
 
     await sb.remove(req.user.username, files);
     await dbFolder.remove(folderId);
@@ -171,7 +174,7 @@ const deleteFolderPost = async (req, res) => {
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
-    let file = await db.getFile(req.user.id, fileId);
+    let file = await dbFile.get(req.user.id, fileId);
     file.size =
         file.size < 1000
             ? file.size + " bytes"
@@ -211,7 +214,7 @@ const addFilePost = [
 
         const { file } = req;
 
-        let { id: fileId } = await db.addFile({
+        let { id: fileId } = await dbFile.add({
             name: file.originalname,
             description: req.body.description,
             size: file.size,
@@ -232,7 +235,7 @@ const addFilePost = [
 
 const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
-    let file = await db.getFile(req.user.id, fileId);
+    let file = await dbFile.get(req.user.id, fileId);
 
     const { data: blob } = await sb.download(
         req.user.username,
@@ -250,7 +253,7 @@ const deleteFileGet = async (req, res) => {
     let { fileId, folderId } = req.params;
     let { name } = req.body;
 
-    await db.deleteFile(req.user.id, fileId);
+    await dbFile.remove(req.user.id, fileId);
     await sb.remove(req.user.username, [{ name, id: fileId }]);
 
     res.redirect(`/folders/${folderId}`);

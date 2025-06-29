@@ -26,6 +26,20 @@ async function getAll(userId) {
     });
 }
 
+async function getAllNested(folderId) {
+    return await prisma.$queryRaw`
+    WITH RECURSIVE top_down AS
+    (
+    SELECT F."name", F."id" FROM "Folder" AS F WHERE F."id"=${folderId}
+    UNION
+    SELECT f."name", f."id" FROM top_down 
+    INNER JOIN "Folder" AS f 
+    ON top_down."id" = f."parentId"
+    ) 
+    SELECT * FROM top_down;
+    `;
+}
+
 async function getPath(folderId) {
     return await prisma.$queryRaw`
         WITH RECURSIVE bottom_up AS
@@ -103,6 +117,7 @@ async function hasChildName(folderId, childName) {
 module.exports = {
     get,
     getAll,
+    getAllNested,
     getPath,
     add,
     update,

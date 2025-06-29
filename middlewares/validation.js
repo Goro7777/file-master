@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
 const dbUser = require("../db/user");
-const db = require("../db/queries");
+const dbFile = require("../db/file");
 const dbFolder = require("../db/folder");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 
@@ -71,7 +71,7 @@ const validateFileData = [
         let folderId = req.params.folderId;
         if (folderId === ROOT_FOLDER_ID) folderId = null;
 
-        let fileExists = await db.getFileByName(
+        let fileExists = await dbFile.getByName(
             req.user.id,
             folderId,
             file.originalname

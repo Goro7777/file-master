@@ -1,8 +1,7 @@
 const prisma = require("./config");
-const { ROOT_FOLDER_ID } = require("../utils/constants");
+const dbFolder = require("./folder");
 
-// files
-async function getFile(userId, fileId) {
+async function get(userId, fileId) {
     return await prisma.file.findFirst({
         where: {
             ownerId: userId,
@@ -11,7 +10,17 @@ async function getFile(userId, fileId) {
     });
 }
 
-async function getFiles(userId, folderId) {
+async function getByName(userId, folderId, fileName) {
+    return await prisma.file.findFirst({
+        where: {
+            ownerId: userId,
+            folderId: folderId,
+            name: fileName,
+        },
+    });
+}
+
+async function getAll(userId, folderId) {
     return await prisma.file.findMany({
         where: {
             folderId: folderId,
@@ -23,38 +32,41 @@ async function getFiles(userId, folderId) {
     });
 }
 
-async function getFilesNested(userId, folderId) {
-    if (folderId === ROOT_FOLDER_ID) {
+async function getAllNested(userId, folderId) {
+    console.log("getting all nested files");
+    if (!folderId) {
         return await prisma.file.findMany({
             select: {
                 name: true,
                 id: true,
             },
+            where: {
+                ownerId: userId,
+            },
         });
     }
 
-    let folders = await prisma.$queryRaw`
-    WITH RECURSIVE top_down AS
-    (
-    SELECT F."name", F."id" FROM "Folder" AS F WHERE F."id"=${folderId}
-    UNION
-    SELECT f."name", f."id" FROM top_down 
-    INNER JOIN "Folder" AS f 
-    ON top_down."id" = f."parentId"
-    ) 
-    SELECT * FROM top_down;
-    `;
-
+    let folders = await dbFolder.getAllNested(folderId);
     let files = [];
     for (let folder of folders) {
-        let folderFiles = await getFiles(userId, folder.id);
+        let folderFiles = await getAll(userId, folder.id);
         if (folderFiles.length) files.push(...folderFiles);
     }
 
     return files;
 }
 
-async function addFile(fileData) {
+async function remove(userId, fileId) {
+    console.log("deleting folder with id: " + fileId);
+    await prisma.file.delete({
+        where: {
+            id: fileId,
+            ownerId: userId,
+        },
+    });
+}
+
+async function add(fileData) {
     let newFile = await prisma.file.create({
         data: {
             name: fileData.name,
@@ -88,7 +100,7 @@ async function addFile(fileData) {
     return newFile;
 }
 
-async function getFileByName(userId, folderId, fileName) {
+async function getByName(userId, folderId, fileName) {
     return await prisma.file.findFirst({
         where: {
             ownerId: userId,
@@ -98,7 +110,7 @@ async function getFileByName(userId, folderId, fileName) {
     });
 }
 
-async function deleteFile(userId, fileId) {
+async function remove(userId, fileId) {
     await prisma.file.delete({
         where: {
             id: fileId,
@@ -108,10 +120,10 @@ async function deleteFile(userId, fileId) {
 }
 
 module.exports = {
-    addFile,
-    getFile,
-    getFiles,
-    getFileByName,
-    getFilesNested,
-    deleteFile,
+    get,
+    getByName,
+    getAll,
+    getAllNested,
+    add,
+    remove,
 };

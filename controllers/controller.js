@@ -160,12 +160,10 @@ const editFolderPost = [
 
 const deleteFolderPost = async (req, res) => {
     let { folderId } = req.body;
-    console.log(folderId);
 
-    let files = await db.getFiles(req.user.id, folderId);
-    let filesNames = files.map((file) => file.name);
+    let files = await db.getFilesNested(req.user.id, folderId);
 
-    await sb.remove(req.user.username, filesNames);
+    await sb.remove(req.user.username, files);
     await db.deleteFolder(folderId);
 
     res.redirect("/");
@@ -214,9 +212,8 @@ const addFilePost = [
         }
 
         const { file } = req;
-        await sb.upload(req.user.username, file.originalname, file.buffer);
 
-        await db.addFile({
+        let { id: fileId } = await db.addFile({
             name: file.originalname,
             description: req.body.description,
             size: file.size,
@@ -224,6 +221,12 @@ const addFilePost = [
             folderId: folderId === ROOT_FOLDER_ID ? null : folderId,
             ownerId: req.user.id,
         });
+        await sb.upload(
+            req.user.username,
+            file.originalname,
+            fileId,
+            file.buffer
+        );
 
         res.redirect(`/folders/${folderId}`);
     },
@@ -246,10 +249,10 @@ const downloadFileGet = async (req, res) => {
 
 const deleteFileGet = async (req, res) => {
     let { fileId, folderId } = req.params;
-    let { name: fileName } = req.body;
+    let { name } = req.body;
 
     await db.deleteFile(req.user.id, fileId);
-    await sb.remove(req.user.username, [fileName]);
+    await sb.remove(req.user.username, [{ name, id: fileId }]);
 
     res.redirect(`/folders/${folderId}`);
 };

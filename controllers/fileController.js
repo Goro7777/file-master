@@ -76,7 +76,9 @@ const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
     let file = await dbFile.get(fileId, req.user.id);
 
-    // if (req.user.id === file.ownerId || file.sharedWith.includes(req.user.id))
+    // if (req.user.id !== file.ownerId || !file.sharedWith.includes(req.user.id))
+    // throw Error("you can't download this")
+
     const { data: blob } = await sb.download(
         req.user.username,
         file.name,

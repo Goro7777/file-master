@@ -16,15 +16,16 @@ model Session {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  email     String   @unique
-  firstname String
-  lastname  String
-  password  String
-  joinedAt  DateTime @default(now())
-  folders   Folder[]
-  files     File[]
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  firstname    String
+  lastname     String
+  password     String
+  joinedAt     DateTime @default(now())
+  folders      Folder[]
+  files        File[]
+  foreignFiles File[]   @relation("Share")
 }
 
 model Folder {
@@ -51,4 +52,5 @@ model File {
   folderId    String?
   owner       User     @relation(fields: [ownerId], references: [id])
   ownerId     String
+  sharedWith  User[]   @relation("Share")
 }

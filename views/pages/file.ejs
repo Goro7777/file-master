@@ -41,11 +41,13 @@
     <a
         href="/folders/<%= folderId %>/files/<%= file.id %>/download"
         class="btn btn-primary btn-sm"
-        ><i class="bi bi-file-plus"></i>&nbsp&nbspDownload the file</a
-    >
-    <a href="" class="btn btn-warning btn-sm"
-        ><i class="bi bi-folder-plus"></i>&nbsp&nbspShare the file</a
-    >
+        ><i class="bi bi-file-arrow-down"></i>&nbsp&nbspDownload the file</a
+    >&nbsp&nbsp
+    <a
+        href="/folders/<%= folderId %>/files/<%= file.id %>/share"
+        class="btn btn-info btn-sm"
+        ><i class="bi bi-send"></i>&nbsp&nbspShare the file</a
+    >&nbsp&nbsp
     <button
         type="button"
         class="btn btn-danger btn-sm"

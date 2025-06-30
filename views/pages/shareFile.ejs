@@ -1,0 +1,53 @@
+<%- include('../partials/header', { title: "Share file" }) %>
+<div class="col-12 col-md-11 col-lg-9 col-xl-7">
+    <%-include('../partials/folderPath') %>
+
+    <h2 class="fw-bold mb-4 text-uppercase px-2">
+        Share&nbsp&nbsp<span class="text-primary"
+            ><i class="bi bi-file-earmark"></i>&nbsp<%= file.name %></span
+        >
+    </h2>
+    <p class="border-5 border-success-subtle border-bottom mb-4 px-2">
+        <%= file.description %>
+    </p>
+
+    <form
+        class="px-2"
+        action="/folders/<%= folderId %>/files/<%= file.id %>/share"
+        method="POST"
+    >
+        <div class="mb-md-1 mt-md-1">
+            <div class="fs-5 mb-4">
+                <label for="username" class="form-label"
+                    >Enter <b>username</b></label
+                >
+                <input
+                    class="form-control form-control-lg"
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                />
+                <% if (locals.error) { %>
+                <div class="text-warning"><%= error %></div>
+                <% } %>
+            </div>
+
+            <div class="mb-4">
+                <button
+                    class="btn btn-outline-success btn-lg px-5 text-capitalize"
+                    type="submit"
+                >
+                    Share</button
+                >&nbsp&nbsp
+                <a
+                    href="/folders/<%= folderId %>/files/<%= file.id %>"
+                    class="btn btn-outline-dark btn-lg px-5 text-capitalize"
+                    type="submit"
+                >
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+</div>

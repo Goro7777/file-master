@@ -4,7 +4,7 @@ const dbFile = require("../db/file");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 const { upload } = require("../storage/config");
-const { getFolderPath } = require("./folder");
+const { getFolderPath } = require("./folderController");
 
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
@@ -94,10 +94,29 @@ const deleteFileGet = async (req, res) => {
     res.redirect(`/folders/${folderId}`);
 };
 
+const shareFileGet = async (req, res) => {
+    let { folderId, fileId } = req.params;
+    let file = await dbFile.get(req.user.id, fileId);
+
+    let folderPath = await getFolderPath(folderId);
+
+    res.render("pages/shareFile", { file, folderPath, folderId });
+};
+
+const shareFilePost = async (req, res) => {
+    const { folderId, fileId } = req.params;
+    console.log("post controller");
+    console.log(req.body);
+
+    res.redirect(`/folders/${folderId}/files/${fileId}`);
+};
+
 module.exports = {
     showFileGet,
     addFileGet,
     addFilePost,
     downloadFileGet,
     deleteFileGet,
+    shareFileGet,
+    shareFilePost,
 };

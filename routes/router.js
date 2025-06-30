@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const authCont = require("../controllers/auth");
-const foldCont = require("../controllers/folder");
-const fileCont = require("../controllers/file");
+const authCont = require("../controllers/authController");
+const foldCont = require("../controllers/folderController");
+const fileCont = require("../controllers/fileController");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 const { checkAuth } = require("../middlewares/auth");
 
@@ -32,5 +32,7 @@ router.get(
     fileCont.downloadFileGet
 );
 router.post("/folders/:folderId/files/:fileId/delete", fileCont.deleteFileGet);
+router.get("/folders/:folderId/files/:fileId/share", fileCont.shareFileGet);
+router.post("/folders/:folderId/files/:fileId/share", fileCont.shareFilePost);
 
 module.exports = router;

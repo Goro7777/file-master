@@ -33,6 +33,9 @@ router.get(
 );
 router.post("/folders/:folderId/files/:fileId/delete", fileCont.deleteFileGet);
 router.get("/folders/:folderId/files/:fileId/share", fileCont.shareFileGet);
-router.post("/folders/:folderId/files/:fileId/share", fileCont.shareFilePost);
+router.post(
+    "/folders/:folderId/files/:fileId/share",
+    ...fileCont.shareFilePost
+);
 
 module.exports = router;

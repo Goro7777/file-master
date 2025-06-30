@@ -86,8 +86,23 @@ const validateFileData = [
     }),
 ];
 
+const validateFileShare = [
+    body("username").custom(async (value, { req }) => {
+        let username = req.body.username;
+
+        if (username === req.user.username)
+            throw new Error("You cannot share a file with yourself.");
+
+        let friend = await dbUser.getByUsername(username);
+        if (!friend) throw new Error("No user found.");
+
+        return true;
+    }),
+];
+
 module.exports = {
     validateSignup,
     validateFolderData,
     validateFileData,
+    validateFileShare,
 };

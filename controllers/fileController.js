@@ -1,6 +1,10 @@
 const { validationResult } = require("express-validator");
-const { validateFileData } = require("../middlewares/validation");
+const {
+    validateFileData,
+    validateFileShare,
+} = require("../middlewares/validation");
 const dbFile = require("../db/file");
+const dbUser = require("../db/user");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 const { upload } = require("../storage/config");
@@ -99,17 +103,32 @@ const shareFileGet = async (req, res) => {
     let file = await dbFile.get(req.user.id, fileId);
 
     let folderPath = await getFolderPath(folderId);
+    let { error, value } = req.session.redirectData || {};
+    req.session.redirectData = null;
 
-    res.render("pages/shareFile", { file, folderPath, folderId });
+    res.render("pages/shareFile", { file, folderPath, folderId, error, value });
 };
 
-const shareFilePost = async (req, res) => {
-    const { folderId, fileId } = req.params;
-    console.log("post controller");
-    console.log(req.body);
+const shareFilePost = [
+    validateFileShare,
+    async (req, res) => {
+        const { folderId, fileId } = req.params;
+        let username = req.body.username;
 
-    res.redirect(`/folders/${folderId}/files/${fileId}`);
-};
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            req.session.redirectData = {
+                error: errors.errors[0].msg,
+                value: username,
+            };
+            return res.redirect(`/folders/${folderId}/files/${fileId}/share`);
+        }
+
+        // change db
+
+        res.redirect(`/folders/${folderId}/files/${fileId}`);
+    },
+];
 
 module.exports = {
     showFileGet,

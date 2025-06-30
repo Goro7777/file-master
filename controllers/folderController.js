@@ -15,7 +15,7 @@ const showFolderGet = async (req, res) => {
 
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
-        let homeFiles = await dbFile.getAll(req.user.id, null);
+        let homeFiles = await dbFile.getAll(null, req.user.id);
 
         map[ROOT_FOLDER_ID] = {
             id: ROOT_FOLDER_ID,
@@ -155,8 +155,8 @@ const deleteFolderPost = async (req, res) => {
     let { folderId } = req.body;
 
     let files = await dbFile.getAllNested(
-        req.user.id,
-        folderId !== ROOT_FOLDER_ID ? folderId : null
+        folderId !== ROOT_FOLDER_ID ? folderId : null,
+        req.user.id
     );
 
     await sb.remove(req.user.username, files);

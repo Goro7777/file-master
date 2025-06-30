@@ -13,7 +13,7 @@ const { getFolderPath } = require("./folderController");
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
-    let file = await dbFile.get(req.user.id, fileId);
+    let file = await dbFile.get(fileId, req.user.id);
     file.size =
         file.size < 1000
             ? file.size + " bytes"
@@ -74,8 +74,9 @@ const addFilePost = [
 
 const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
-    let file = await dbFile.get(req.user.id, fileId);
+    let file = await dbFile.get(fileId, req.user.id);
 
+    // if (req.user.id === file.ownerId || file.sharedWith.includes(req.user.id))
     const { data: blob } = await sb.download(
         req.user.username,
         file.name,
@@ -92,7 +93,7 @@ const deleteFileGet = async (req, res) => {
     let { fileId, folderId } = req.params;
     let { name } = req.body;
 
-    await dbFile.remove(req.user.id, fileId);
+    await dbFile.remove(fileId, req.user.id);
     await sb.remove(req.user.username, [{ name, id: fileId }]);
 
     res.redirect(`/folders/${folderId}`);
@@ -100,7 +101,7 @@ const deleteFileGet = async (req, res) => {
 
 const shareFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
-    let file = await dbFile.get(req.user.id, fileId);
+    let file = await dbFile.get(fileId, req.user.id);
 
     let folderPath = await getFolderPath(folderId);
     let { error, value } = req.session.redirectData || {};

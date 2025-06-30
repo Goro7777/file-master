@@ -72,9 +72,9 @@ const validateFileData = [
         if (folderId === ROOT_FOLDER_ID) folderId = null;
 
         let fileExists = await dbFile.getByName(
-            req.user.id,
             folderId,
-            file.originalname
+            file.originalname,
+            req.user.id
         );
 
         if (fileExists)

@@ -1,9 +1,16 @@
-const ROOT_FOLDER_ID = "root";
-const ROOT_FOLDER_NAME = "All";
-const ROOT_FOLDER_DESCRIPTION = "All files and folders";
+const ROOT_FOLDER = {
+    id: "root",
+    name: "All",
+    description: "All files and folders",
+};
+
+const FOREIGN_FOLDER = {
+    id: "foreign",
+    name: "Foreign",
+    description: "All files and folders shared with you by other users",
+};
 
 module.exports = {
-    ROOT_FOLDER_ID,
-    ROOT_FOLDER_NAME,
-    ROOT_FOLDER_DESCRIPTION,
+    ROOT_FOLDER,
+    FOREIGN_FOLDER,
 };

@@ -3,40 +3,23 @@ const { validateFolderData } = require("../middlewares/validation");
 const dbFolder = require("../db/folder");
 const dbFile = require("../db/file");
 const sb = require("../storage/queries");
-const {
-    ROOT_FOLDER_ID,
-    ROOT_FOLDER_NAME,
-    ROOT_FOLDER_DESCRIPTION,
-} = require("../utils/constants");
+const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
+const { getRootFolder, getForeignFolder, getFolderPath } = require("./util");
+// check noDelete in folders
 
 const showFolderGet = async (req, res) => {
     const { folderId } = req.params;
     let folders = await dbFolder.getAll(req.user.id);
 
     let map = {};
-    if (folderId === ROOT_FOLDER_ID) {
-        let homeFiles = await dbFile.getAll(null, req.user.id);
-        let foreignFiles = await dbFile.getForeign(req.user.id);
-        console.log("---- Foreign files ----");
-        console.log(foreignFiles);
-
-        map[ROOT_FOLDER_ID] = {
-            id: ROOT_FOLDER_ID,
-            name: ROOT_FOLDER_NAME,
-            description: ROOT_FOLDER_DESCRIPTION,
-            children: [],
-            noDelete: true,
-            files: homeFiles,
-        };
-    }
-    for (let folder of folders) {
-        map[folder.id] = folder;
-        if (!folder.parentId && folderId === ROOT_FOLDER_ID) {
-            map[ROOT_FOLDER_ID].children.push({ id: folder.id });
-        }
+    if (folderId === FOREIGN_FOLDER.id) {
+        map[FOREIGN_FOLDER.id] = await getForeignFolder(req.user.id);
+    } else {
+        map[ROOT_FOLDER.id] = await getRootFolder(folders, req.user.id);
+        map[FOREIGN_FOLDER.id] = map[ROOT_FOLDER.id].children.at(-1);
+        for (let folder of folders) map[folder.id] = folder;
     }
     map[folderId].isRoot = true;
-
     let folderPath = await getFolderPath(folderId);
 
     res.render("pages/folder", {
@@ -49,7 +32,7 @@ const showFolderGet = async (req, res) => {
 const addFolderGet = async (req, res) => {
     const { folderId } = req.params;
     // check if user is trying to access another user's folder
-    if (folderId !== ROOT_FOLDER_ID) {
+    if (folderId !== ROOT_FOLDER.id) {
         let folder = await dbFolder.get(folderId);
         if (!folder || folder.ownerId !== req.user.id) {
             return res.status(404).render("pages/error", {
@@ -90,7 +73,7 @@ const addFolderPost = [
             await dbFolder.add({
                 name: req.body.name,
                 description: req.body.description,
-                parentId: folderId !== ROOT_FOLDER_ID ? folderId : null,
+                parentId: folderId !== ROOT_FOLDER.id ? folderId : null,
                 ownerId: req.user.id,
             });
             res.redirect(`/folders/${folderId}`);
@@ -100,7 +83,7 @@ const addFolderPost = [
 
 const editFolderGet = async (req, res) => {
     const { folderId } = req.params;
-    if (folderId === ROOT_FOLDER_ID) {
+    if (folderId === ROOT_FOLDER.id) {
         return res.status(400).render("pages/error", {
             message: "400 Bad Request: You cannot edit this folder.",
         });
@@ -158,7 +141,7 @@ const deleteFolderPost = async (req, res) => {
     let { folderId } = req.body;
 
     let files = await dbFile.getAllNested(
-        folderId !== ROOT_FOLDER_ID ? folderId : null,
+        folderId !== ROOT_FOLDER.id ? folderId : null,
         req.user.id
     );
 
@@ -177,12 +160,3 @@ module.exports = {
     editFolderPost,
     getFolderPath,
 };
-
-async function getFolderPath(folderId) {
-    let folderPath = await dbFolder.getPath(folderId);
-    folderPath.push({
-        name: ROOT_FOLDER_NAME,
-        id: ROOT_FOLDER_ID,
-    });
-    return folderPath.reverse();
-}

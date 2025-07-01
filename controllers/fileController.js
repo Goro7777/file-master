@@ -6,7 +6,7 @@ const {
 const dbFile = require("../db/file");
 const dbUser = require("../db/user");
 const sb = require("../storage/queries");
-const { ROOT_FOLDER_ID } = require("../utils/constants");
+const { ROOT_FOLDER } = require("../utils/constants");
 const { upload } = require("../storage/config");
 const { getFolderPath } = require("./folderController");
 const prisma = require("../db/config");
@@ -60,7 +60,7 @@ const addFilePost = [
             description: req.body.description,
             size: file.size,
             mimeType: file.mimetype,
-            folderId: folderId === ROOT_FOLDER_ID ? null : folderId,
+            folderId: folderId === ROOT_FOLDER.id ? null : folderId,
             ownerId: req.user.id,
         });
         await sb.upload(

@@ -5,6 +5,7 @@ const expressSession = require("express-session");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { PrismaClient } = require("./generated/prisma/client");
 const passport = require("passport");
+const { ROOT_FOLDER, FOREIGN_FOLDER } = require("./utils/constants");
 
 // change POST to DELETE?
 
@@ -55,9 +56,11 @@ require("./auth/passport");
 app.use(passport.initialize());
 app.use(passport.session());
 
-// To make user available in all views
+// To make user and constants available in all views
 app.use((req, res, next) => {
     res.locals.user = req.user;
+    res.locals.ROOT_FOLDER = ROOT_FOLDER;
+    res.locals.FOREIGN_FOLDER = FOREIGN_FOLDER;
     next();
 });
 

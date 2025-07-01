@@ -128,6 +128,24 @@ async function share(fileId, foreignUsername, userId) {
     });
 }
 
+async function unshare(fileId, foreignUsername, userId) {
+    // perhaps, you don't need userId for this to work from both users
+
+    await prisma.file.update({
+        where: {
+            id: fileId,
+            ownerId: userId,
+        },
+        data: {
+            sharedWith: {
+                disconnect: {
+                    username: foreignUsername,
+                },
+            },
+        },
+    });
+}
+
 module.exports = {
     get,
     getByName,
@@ -137,4 +155,5 @@ module.exports = {
     add,
     remove,
     share,
+    unshare,
 };

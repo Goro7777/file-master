@@ -6,6 +6,8 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { PrismaClient } = require("./generated/prisma/client");
 const passport = require("passport");
 
+// change POST to DELETE?
+
 const router = require("./routes/router");
 
 const app = express();

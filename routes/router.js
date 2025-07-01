@@ -37,5 +37,9 @@ router.post(
     "/folders/:folderId/files/:fileId/share",
     ...fileCont.shareFilePost
 );
+router.post(
+    "/folders/:folderId/files/:fileId/unshare",
+    fileCont.unshareFilePost
+);
 
 module.exports = router;

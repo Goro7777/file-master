@@ -129,13 +129,20 @@ const shareFilePost = [
             return res.redirect(`/folders/${folderId}/files/${fileId}/share`);
         }
 
-        // change db
         await dbFile.share(fileId, username, req.user.id);
-        console.log(`Shared file with ${username}`);
 
         res.redirect(`/folders/${folderId}/files/${fileId}`);
     },
 ];
+
+const unshareFilePost = async (req, res) => {
+    const { folderId, fileId } = req.params;
+    let username = req.body.username;
+
+    await dbFile.unshare(fileId, username, req.user.id);
+
+    res.redirect(`/folders/${folderId}/files/${fileId}`);
+};
 
 module.exports = {
     showFileGet,
@@ -145,4 +152,5 @@ module.exports = {
     deleteFileGet,
     shareFileGet,
     shareFilePost,
+    unshareFilePost,
 };

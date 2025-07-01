@@ -16,6 +16,9 @@ const showFolderGet = async (req, res) => {
     let map = {};
     if (folderId === ROOT_FOLDER_ID) {
         let homeFiles = await dbFile.getAll(null, req.user.id);
+        let foreignFiles = await dbFile.getForeign(req.user.id);
+        console.log("---- Foreign files ----");
+        console.log(foreignFiles);
 
         map[ROOT_FOLDER_ID] = {
             id: ROOT_FOLDER_ID,

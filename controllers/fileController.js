@@ -9,6 +9,7 @@ const sb = require("../storage/queries");
 const { ROOT_FOLDER_ID } = require("../utils/constants");
 const { upload } = require("../storage/config");
 const { getFolderPath } = require("./folderController");
+const prisma = require("../db/config");
 
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
@@ -128,6 +129,8 @@ const shareFilePost = [
         }
 
         // change db
+        await dbFile.share(fileId, username, req.user.id);
+        console.log(`Shared file with ${username}`);
 
         res.redirect(`/folders/${folderId}/files/${fileId}`);
     },

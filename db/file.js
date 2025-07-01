@@ -32,6 +32,17 @@ async function getAll(folderId, userId) {
     });
 }
 
+async function getForeign(userId) {
+    return await prisma.user.findFirst({
+        where: {
+            id: userId,
+        },
+        select: {
+            foreignFiles: true,
+        },
+    });
+}
+
 async function getAllNested(folderId, userId) {
     if (!folderId) {
         return await prisma.file.findMany({
@@ -98,11 +109,25 @@ async function remove(fileId, userId) {
     });
 }
 
+async function share(fileId, foreignUsername, userId) {
+    await prisma.file.update({
+        where: {
+            id: fileId,
+            ownerId: userId,
+        },
+        data: {
+            sharedWith: { set: [{ username: foreignUsername }] },
+        },
+    });
+}
+
 module.exports = {
     get,
     getByName,
     getAll,
+    getForeign,
     getAllNested,
     add,
     remove,
+    share,
 };

@@ -7,6 +7,9 @@ async function get(fileId, userId) {
             ownerId: userId,
             id: fileId,
         },
+        include: {
+            sharedWith: true,
+        },
     });
 }
 
@@ -116,7 +119,11 @@ async function share(fileId, foreignUsername, userId) {
             ownerId: userId,
         },
         data: {
-            sharedWith: { set: [{ username: foreignUsername }] },
+            sharedWith: {
+                connect: {
+                    username: foreignUsername,
+                },
+            },
         },
     });
 }

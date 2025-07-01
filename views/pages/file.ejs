@@ -33,7 +33,14 @@
                 <p class="text-muted mb-0">Shared with</p>
             </div>
             <div class="col-sm-9">
-                <p class="mb-0"><%= file.sharedWith %></p>
+                <p class="mb-0">
+                    <% for (let user of file.sharedWith) { %>
+                    <span
+                        ><%= user.username %>
+                        <a href="" class="btn btn-sm btn-light"
+                            ><i class="bi bi-x"></i></a></span
+                    >&nbsp&nbsp&nbsp&nbsp <% } %>
+                </p>
             </div>
         </div>
     </div>

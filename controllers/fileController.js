@@ -15,6 +15,7 @@ const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
     let file = await dbFile.get(fileId, req.user.id);
+    console.log(file);
     file.size =
         file.size < 1000
             ? file.size + " bytes"

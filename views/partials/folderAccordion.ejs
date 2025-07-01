@@ -42,9 +42,10 @@
             class="accordion-collapse collapse show m-0 p-0"
         >
             <div class="accordion-body py-0 pe-0">
-                <% for (let subFolder of folders[key].children) { %> <%-
+                <% for (let subFolder of folders[key].children) { %> <% if
+                (subFolder.id !== FOREIGN_FOLDER.id) { %> <%-
                 include('./folderAccordion', { folders, key: subFolder.id }) %>
-                <% } %> <% if (folders[key].files) { for (let file of
+                <% }} %> <% if (folders[key].files) { for (let file of
                 folders[key].files) { %>
                 <div
                     class="ps-3 py-1 d-flex align-items-center"
@@ -68,7 +69,9 @@
                         ></a>
                     </span>
                 </div>
-                <% }} %>
+                <% }} %> <% if (key === ROOT_FOLDER.id) { %> <%-
+                include('./folderAccordion', { folders, key: FOREIGN_FOLDER.id
+                }) %> <% } %>
             </div>
         </div>
     </div>

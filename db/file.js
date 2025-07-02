@@ -63,7 +63,7 @@ async function getAllNested(folderId, userId) {
     let folders = await dbFolder.getAllNested(folderId);
     let files = [];
     for (let folder of folders) {
-        let folderFiles = await getAll(userId, folder.id);
+        let folderFiles = await getAll(folder.id, userId);
         if (folderFiles.length) files.push(...folderFiles);
     }
 

@@ -12,6 +12,7 @@
             >
                 <i class="bi bi-folder"></i>&nbsp&nbsp<%= folders[key].name %>
                 <span class="flex-grow-1 text-end">
+                    <% if (key !== FOREIGN_FOLDER.id) { %>
                     <a
                         href="/folders/<%= key %>/files/upload"
                         class="btn btn-link text-primary"
@@ -24,8 +25,8 @@
                         class="btn btn-link text-warning"
                         data-toggle="tooltip"
                         title="Create a folder"
-                        ><i class="bi bi-folder-plus fs-5"></i
-                    ></a>
+                        ><i class="bi bi-folder-plus fs-5"></i></a
+                    ><% } %>
                     <a
                         href="/folders/<%= key %>"
                         class="btn"

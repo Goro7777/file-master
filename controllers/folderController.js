@@ -5,7 +5,6 @@ const dbFile = require("../db/file");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
 const { getRootFolder, getForeignFolder, getFolderPath } = require("./util");
-// check noDelete in folders
 
 const showFolderGet = async (req, res) => {
     const { folderId } = req.params;

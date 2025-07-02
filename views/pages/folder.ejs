@@ -21,6 +21,7 @@
         <%= folders[key].description %>
     </p>
     <div class="d-flex mb-4 gap-3">
+        <% if (key !== FOREIGN_FOLDER.id) { %>
         <a
             href="/folders/<%= key %>/files/upload"
             class="btn btn-primary btn-sm"
@@ -29,7 +30,7 @@
         <a href="/folders/<%= key %>/create" class="btn btn-warning btn-sm"
             ><i class="bi bi-folder-plus"></i>&nbsp&nbspCreate a sub-folder</a
         >
-        <% if (!folders[key].noDelete) { %>
+        <% } %> <% if (key !== FOREIGN_FOLDER.id && key !== ROOT_FOLDER.id){ %>
         <button
             type="button"
             class="btn btn-danger btn-sm"

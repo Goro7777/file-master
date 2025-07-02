@@ -3,7 +3,7 @@ const dbFolder = require("../db/folder");
 const dbFile = require("../db/file");
 
 const getRootFolder = async (folders, userId) => {
-    let rootFolder = { ...ROOT_FOLDER, noDelete: true };
+    let rootFolder = { ...ROOT_FOLDER };
 
     let homeFiles = await dbFile.getAll(null, userId);
     rootFolder.files = homeFiles;
@@ -21,7 +21,6 @@ const getForeignFolder = async (userId) => {
     let sharedFolder = {
         ...FOREIGN_FOLDER,
         children: [],
-        noDelete: true,
         files: foreignFiles,
     };
 

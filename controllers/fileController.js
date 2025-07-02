@@ -87,13 +87,12 @@ const addFilePost = [
 
 const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
-    let file = await dbFile.get(fileId, req.user.id);
+    let file = await dbFile.get(fileId);
 
-    // if (req.user.id !== file.ownerId || !file.sharedWith.includes(req.user.id))
-    // throw Error("you can't download this")
+    // add check if own file or shared file
 
     const { data: blob } = await sb.download(
-        req.user.username,
+        file.owner.username,
         file.name,
         fileId
     );

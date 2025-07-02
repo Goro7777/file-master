@@ -15,6 +15,7 @@ router.post("/login", authCont.loginPost);
 router.get("/logout", authCont.logoutGet);
 router.get("/sign-up", authCont.signupGet);
 router.post("/sign-up", ...authCont.signupPost);
+router.get("/profile", authCont.profileGet);
 
 router.get("/folders/:folderId", checkAuth, foldCont.showFolderGet);
 router.get("/folders/:folderId/create", checkAuth, foldCont.addFolderGet);

@@ -103,12 +103,17 @@ const downloadFileGet = async (req, res) => {
     res.send(buffer);
 };
 
-const deleteFileGet = async (req, res) => {
+const deleteFilePost = async (req, res) => {
     let { fileId, folderId } = req.params;
-    let { name } = req.body;
 
-    await dbFile.remove(fileId, req.user.id);
-    await sb.remove(req.user.username, [{ name, id: fileId }]);
+    let file = await dbFile.get(fileId);
+
+    if (file.owner.id === req.user.id) {
+        await dbFile.remove(fileId, req.user.id);
+        await sb.remove(req.user.username, [{ name: file.name, id: fileId }]);
+    } else if (file.sharedWith.find((user) => user.id === req.user.id)) {
+        await dbFile.unshare(fileId, req.user.username, file.owner.id);
+    }
 
     res.redirect(`/folders/${folderId}`);
 };
@@ -159,7 +164,7 @@ module.exports = {
     addFileGet,
     addFilePost,
     downloadFileGet,
-    deleteFileGet,
+    deleteFilePost,
     shareFileGet,
     shareFilePost,
     unshareFilePost,

@@ -31,7 +31,7 @@ router.get(
     checkAuth,
     fileCont.downloadFileGet
 );
-router.post("/folders/:folderId/files/:fileId/delete", fileCont.deleteFileGet);
+router.post("/folders/:folderId/files/:fileId/delete", fileCont.deleteFilePost);
 router.get("/folders/:folderId/files/:fileId/share", fileCont.shareFileGet);
 router.post(
     "/folders/:folderId/files/:fileId/share",

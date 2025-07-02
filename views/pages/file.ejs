@@ -21,6 +21,15 @@
         <hr />
         <div class="row">
             <div class="col-sm-3">
+                <p class="text-muted mb-0">Type</p>
+            </div>
+            <div class="col-sm-9">
+                <p class="mb-0"><%= file.mimeType %></p>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-3">
                 <p class="text-muted mb-0">Upload date</p>
             </div>
             <div class="col-sm-9">
@@ -28,6 +37,7 @@
             </div>
         </div>
         <hr />
+        <% if (file.owner.id === user.id) { %>
         <div class="row">
             <div class="col-sm-3">
                 <p class="text-muted mb-0">Shared with</p>
@@ -53,18 +63,28 @@
                 &nbsp&nbsp&nbsp&nbsp <% } %>
             </div>
         </div>
+        <% } else { %>
+        <div class="row">
+            <div class="col-sm-3">
+                <p class="text-muted mb-0">Shared by</p>
+            </div>
+            <div class="col-sm-9">
+                <p class="mb-0"><%= file.owner.username %></p>
+            </div>
+        </div>
+        <% } %>
     </div>
 
     <a
         href="/folders/<%= folderId %>/files/<%= file.id %>/download"
         class="btn btn-primary btn-sm"
         ><i class="bi bi-file-arrow-down"></i>&nbsp&nbspDownload the file</a
-    >&nbsp&nbsp
+    >&nbsp&nbsp <% if (file.owner.id === user.id) { %>
     <a
         href="/folders/<%= folderId %>/files/<%= file.id %>/share"
         class="btn btn-info btn-sm"
         ><i class="bi bi-send"></i>&nbsp&nbspShare the file</a
-    >&nbsp&nbsp
+    >&nbsp&nbsp <% } %>
     <button
         type="button"
         class="btn btn-danger btn-sm"

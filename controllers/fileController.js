@@ -4,18 +4,29 @@ const {
     validateFileShare,
 } = require("../middlewares/validation");
 const dbFile = require("../db/file");
-const dbUser = require("../db/user");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER } = require("../utils/constants");
 const { upload } = require("../storage/config");
 const { getFolderPath } = require("./folderController");
-const prisma = require("../db/config");
+
+// download foreign files
+// unshare foreign files from reciever
 
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
-    let file = await dbFile.get(fileId, req.user.id);
-    console.log(file);
+    let file = await dbFile.get(fileId);
+
+    // check if user is trying to access another user's file
+    if (
+        file.owner.id !== req.user.id &&
+        !file.sharedWith.find((user) => user.id === req.user.id)
+    ) {
+        return res.status(404).render("pages/error", {
+            message: "404 Not Found: You do not have such a file.",
+        });
+    }
+
     file.size =
         file.size < 1000
             ? file.size + " bytes"

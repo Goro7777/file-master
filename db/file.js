@@ -9,6 +9,7 @@ async function get(fileId, userId) {
         },
         include: {
             sharedWith: true,
+            owner: true,
         },
     });
 }

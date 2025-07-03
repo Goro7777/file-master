@@ -1,6 +1,6 @@
 const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
-const dbFolder = require("../db/folder");
-const dbFile = require("../db/file");
+const dbFolder = require("../db/folderDb");
+const dbFile = require("../db/fileDb");
 
 const getRootFolder = async (folders, userId) => {
     let rootFolder = { ...ROOT_FOLDER };

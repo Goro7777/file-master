@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
 const { validateFolderData } = require("../middlewares/validation");
-const dbFolder = require("../db/folder");
-const dbFile = require("../db/file");
+const dbFolder = require("../db/folderDb");
+const dbFile = require("../db/fileDb");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
 const { getRootFolder, getForeignFolder, getFolderPath } = require("./util");

@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const { validateSignup } = require("../middlewares/validation");
 const passport = require("passport");
-const dbUser = require("../db/user");
+const dbUser = require("../db/userDb");
 
 const loginGet = async (req, res) => {
     if (req.isAuthenticated()) {

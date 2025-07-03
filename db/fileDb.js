@@ -1,5 +1,5 @@
 const prisma = require("./config");
-const dbFolder = require("./folder");
+const dbFolder = require("./folderDb");
 
 async function get(fileId, userId) {
     return await prisma.file.findFirst({

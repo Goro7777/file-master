@@ -1,7 +1,7 @@
 const { body } = require("express-validator");
-const dbUser = require("../db/user");
-const dbFile = require("../db/file");
-const dbFolder = require("../db/folder");
+const dbUser = require("../db/userDb");
+const dbFile = require("../db/fileDb");
+const dbFolder = require("../db/folderDb");
 const { ROOT_FOLDER } = require("../utils/constants");
 
 const validateSignup = [

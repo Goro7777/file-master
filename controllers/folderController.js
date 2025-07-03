@@ -30,15 +30,7 @@ const showFolderGet = async (req, res) => {
 
 const addFolderGet = async (req, res) => {
     const { folderId } = req.params;
-    // check if user is trying to access another user's folder
-    if (folderId !== ROOT_FOLDER.id) {
-        let folder = await dbFolder.get(folderId);
-        if (!folder || folder.ownerId !== req.user.id) {
-            return res.status(404).render("pages/error", {
-                message: "404 Not Found: You do not have such a folder.",
-            });
-        }
-    }
+
     let folderPath = await getFolderPath(folderId);
 
     let { values, errors } = req.session.redirectData || {};
@@ -82,19 +74,13 @@ const addFolderPost = [
 
 const editFolderGet = async (req, res) => {
     const { folderId } = req.params;
-    if (folderId === ROOT_FOLDER.id) {
+    if (folderId === ROOT_FOLDER.id || folderId === FOREIGN_FOLDER.id) {
         return res.status(400).render("pages/error", {
             message: "400 Bad Request: You cannot edit this folder.",
         });
     }
 
-    // check if user is trying to access another user's folder
     let folder = await dbFolder.get(folderId);
-    if (!folder || folder.ownerId !== req.user.id) {
-        return res.status(404).render("pages/error", {
-            message: "404 Not Found: You do not have such a folder.",
-        });
-    }
 
     let folderPath = await getFolderPath(folderId);
     let { values, errors } = req.session.redirectData || {};
@@ -154,8 +140,7 @@ module.exports = {
     showFolderGet,
     addFolderGet,
     addFolderPost,
-    deleteFolderPost,
     editFolderGet,
     editFolderPost,
-    getFolderPath,
+    deleteFolderPost,
 };

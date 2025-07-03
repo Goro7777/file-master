@@ -1,9 +1,10 @@
 const prisma = require("./config");
 
-async function get(folderId) {
-    return prisma.folder.findUnique({
+async function get(folderId, userId) {
+    return prisma.folder.findFirst({
         where: {
             id: folderId,
+            ownerId: userId,
         },
     });
 }

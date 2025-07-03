@@ -4,7 +4,7 @@ const authCont = require("../controllers/authController");
 const foldCont = require("../controllers/folderController");
 const fileCont = require("../controllers/fileController");
 const { ROOT_FOLDER } = require("../utils/constants");
-const { checkAuth } = require("../middlewares/auth");
+const { checkAuth, checkFolder } = require("../middlewares/access");
 
 router.get("/", checkAuth, (req, res) =>
     res.redirect(`/folders/${ROOT_FOLDER.id}`)
@@ -15,21 +15,25 @@ router.post("/login", authCont.loginPost);
 router.get("/logout", authCont.logoutGet);
 router.get("/sign-up", authCont.signupGet);
 router.post("/sign-up", ...authCont.signupPost);
+
+router.use(checkAuth);
+
 router.get("/profile", authCont.profileGet);
 
-router.get("/folders/:folderId", checkAuth, foldCont.showFolderGet);
-router.get("/folders/:folderId/create", checkAuth, foldCont.addFolderGet);
-router.post("/folders/:folderId/create", ...foldCont.addFolderPost);
-router.post("/folders/:folderId/delete", foldCont.deleteFolderPost);
-router.get("/folders/:folderId/edit", checkAuth, foldCont.editFolderGet);
-router.post("/folders/:folderId/edit", ...foldCont.editFolderPost);
+router.use("/folders/:folderId", checkFolder);
 
-router.get("/folders/:folderId/files/upload", checkAuth, fileCont.addFileGet);
+router.get("/folders/:folderId", foldCont.showFolderGet);
+router.get("/folders/:folderId/create", foldCont.addFolderGet);
+router.post("/folders/:folderId/create", ...foldCont.addFolderPost);
+router.get("/folders/:folderId/edit", foldCont.editFolderGet);
+router.post("/folders/:folderId/edit", ...foldCont.editFolderPost);
+router.post("/folders/:folderId/delete", foldCont.deleteFolderPost);
+
+router.get("/folders/:folderId/files/upload", fileCont.addFileGet);
 router.post("/folders/:folderId/files/upload", ...fileCont.addFilePost);
-router.get("/folders/:folderId/files/:fileId", checkAuth, fileCont.showFileGet);
+router.get("/folders/:folderId/files/:fileId", fileCont.showFileGet);
 router.get(
     "/folders/:folderId/files/:fileId/download",
-    checkAuth,
     fileCont.downloadFileGet
 );
 router.post("/folders/:folderId/files/:fileId/delete", fileCont.deleteFilePost);

@@ -7,8 +7,6 @@ const { PrismaClient } = require("./generated/prisma/client");
 const passport = require("passport");
 const { ROOT_FOLDER, FOREIGN_FOLDER } = require("./constants");
 
-// change POST to DELETE?
-
 const router = require("./routes/router");
 
 const app = express();

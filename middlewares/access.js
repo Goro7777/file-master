@@ -3,10 +3,8 @@ const dbFile = require("../db/fileDb");
 const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../constants");
 
 const checkAuth = (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        console.log("not authenticated");
-        return res.redirect("/login");
-    }
+    if (!req.isAuthenticated()) return res.redirect("/login");
+
     return next();
 };
 

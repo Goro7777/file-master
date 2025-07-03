@@ -10,7 +10,7 @@ const { upload } = require("../storage/config");
 const { getFolderPath } = require("./util");
 
 const showFileGet = async (req, res) => {
-    let { folderId, fileId } = req.params;
+    let { folderId } = req.params;
 
     let file = req.file;
 

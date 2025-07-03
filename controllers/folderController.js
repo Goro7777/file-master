@@ -3,7 +3,7 @@ const { validateFolderData } = require("../middlewares/validation");
 const dbFolder = require("../db/folderDb");
 const dbFile = require("../db/fileDb");
 const sb = require("../storage/queries");
-const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
+const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../constants");
 const { getRootFolder, getForeignFolder, getFolderPath } = require("./util");
 
 const showFolderGet = async (req, res) => {

@@ -5,7 +5,7 @@ const expressSession = require("express-session");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { PrismaClient } = require("./generated/prisma/client");
 const passport = require("passport");
-const { ROOT_FOLDER, FOREIGN_FOLDER } = require("./utils/constants");
+const { ROOT_FOLDER, FOREIGN_FOLDER } = require("./constants");
 
 // change POST to DELETE?
 

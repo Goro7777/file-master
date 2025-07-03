@@ -1,4 +1,4 @@
-const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
+const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../constants");
 const dbFolder = require("../db/folderDb");
 const dbFile = require("../db/fileDb");
 

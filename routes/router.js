@@ -3,7 +3,7 @@ const router = express.Router();
 const authCont = require("../controllers/authController");
 const foldCont = require("../controllers/folderController");
 const fileCont = require("../controllers/fileController");
-const { ROOT_FOLDER } = require("../utils/constants");
+const { ROOT_FOLDER } = require("../constants");
 const { checkAuth, checkFolder, checkFile } = require("../middlewares/access");
 
 router.get("/", checkAuth, (req, res) =>

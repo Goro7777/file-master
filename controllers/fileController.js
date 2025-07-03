@@ -5,7 +5,7 @@ const {
 } = require("../middlewares/validation");
 const dbFile = require("../db/fileDb");
 const sb = require("../storage/queries");
-const { ROOT_FOLDER } = require("../utils/constants");
+const { ROOT_FOLDER } = require("../constants");
 const { upload } = require("../storage/config");
 const { getFolderPath } = require("./util");
 

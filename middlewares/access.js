@@ -1,6 +1,6 @@
 const dbFolder = require("../db/folderDb");
 const dbFile = require("../db/fileDb");
-const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
+const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../constants");
 
 const checkAuth = (req, res, next) => {
     if (!req.isAuthenticated()) {

@@ -1,3 +1,4 @@
+const multer = require("multer");
 const { validationResult } = require("express-validator");
 const {
     validateFileData,
@@ -6,8 +7,9 @@ const {
 const dbFile = require("../db/fileDb");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER } = require("../constants");
-const { upload } = require("../storage/config");
 const { getFolderPath } = require("./util");
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const showFileGet = async (req, res) => {
     let { folderId } = req.params;

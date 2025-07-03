@@ -4,12 +4,13 @@ const authCont = require("../controllers/authController");
 const foldCont = require("../controllers/folderController");
 const fileCont = require("../controllers/fileController");
 const { ROOT_FOLDER } = require("../utils/constants");
-const { checkAuth, checkFolder } = require("../middlewares/access");
+const { checkAuth, checkFolder, checkFile } = require("../middlewares/access");
 
 router.get("/", checkAuth, (req, res) =>
     res.redirect(`/folders/${ROOT_FOLDER.id}`)
 );
 
+// auth
 router.get("/login", authCont.loginGet);
 router.post("/login", authCont.loginPost);
 router.get("/logout", authCont.logoutGet);
@@ -20,6 +21,7 @@ router.use(checkAuth);
 
 router.get("/profile", authCont.profileGet);
 
+// folders
 router.use("/folders/:folderId", checkFolder);
 
 router.get("/folders/:folderId", foldCont.showFolderGet);
@@ -29,8 +31,12 @@ router.get("/folders/:folderId/edit", foldCont.editFolderGet);
 router.post("/folders/:folderId/edit", ...foldCont.editFolderPost);
 router.post("/folders/:folderId/delete", foldCont.deleteFolderPost);
 
+// files
 router.get("/folders/:folderId/files/upload", fileCont.addFileGet);
 router.post("/folders/:folderId/files/upload", ...fileCont.addFilePost);
+
+router.use("/folders/:folderId/files/:fileId", checkFile);
+
 router.get("/folders/:folderId/files/:fileId", fileCont.showFileGet);
 router.get(
     "/folders/:folderId/files/:fileId/download",

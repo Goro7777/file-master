@@ -7,25 +7,12 @@ const dbFile = require("../db/file");
 const sb = require("../storage/queries");
 const { ROOT_FOLDER } = require("../utils/constants");
 const { upload } = require("../storage/config");
-const { getFolderPath } = require("./folderController");
-
-// download foreign files
-// unshare foreign files from reciever
+const { getFolderPath } = require("./util");
 
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
     let file = await dbFile.get(fileId);
-
-    // check if user is trying to access another user's file
-    if (
-        file.owner.id !== req.user.id &&
-        !file.sharedWith.find((user) => user.id === req.user.id)
-    ) {
-        return res.status(404).render("pages/error", {
-            message: "404 Not Found: You do not have such a file.",
-        });
-    }
 
     file.size =
         file.size < 1000
@@ -89,8 +76,6 @@ const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
     let file = await dbFile.get(fileId);
 
-    // add check if own file or shared file
-
     const { data: blob } = await sb.download(
         file.owner.username,
         file.name,
@@ -120,7 +105,16 @@ const deleteFilePost = async (req, res) => {
 
 const shareFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
-    let file = await dbFile.get(fileId, req.user.id);
+
+    let file = await dbFile.get(fileId);
+    if (file.owner.id !== req.user.id) {
+        console.log(
+            `${req.user.username} is trying to share another user's file.`
+        );
+        return res.status(404).render("pages/error", {
+            message: "404 Not Found: You do not have such a file.",
+        });
+    }
 
     let folderPath = await getFolderPath(folderId);
     let { error, value } = req.session.redirectData || {};

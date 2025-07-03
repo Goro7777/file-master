@@ -1,4 +1,5 @@
 const dbFolder = require("../db/folder");
+const dbFile = require("../db/file");
 const { ROOT_FOLDER, FOREIGN_FOLDER } = require("../utils/constants");
 
 const checkAuth = (req, res, next) => {
@@ -10,7 +11,6 @@ const checkAuth = (req, res, next) => {
 };
 
 const checkFolder = async (req, res, next) => {
-    console.log("----- checkFolder -----");
     const { folderId } = req.params;
 
     if (folderId !== ROOT_FOLDER.id && folderId !== FOREIGN_FOLDER.id) {
@@ -29,7 +29,27 @@ const checkFolder = async (req, res, next) => {
     return next();
 };
 
+const checkFile = async (req, res, next) => {
+    const { fileId } = req.params;
+
+    let file = await dbFile.get(fileId);
+    if (
+        file.ownerId !== req.user.id &&
+        !file.sharedWith.find((user) => user.id === req.user.id)
+    ) {
+        console.log(
+            `${req.user.username} is trying to access another user's file.`
+        );
+        return res.status(404).render("pages/error", {
+            message: "404 Not Found: You do not have such a file.",
+        });
+    }
+
+    return next();
+};
+
 module.exports = {
     checkAuth,
     checkFolder,
+    checkFile,
 };

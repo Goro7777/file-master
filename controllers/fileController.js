@@ -12,7 +12,7 @@ const { getFolderPath } = require("./util");
 const showFileGet = async (req, res) => {
     let { folderId, fileId } = req.params;
 
-    let file = await dbFile.get(fileId);
+    let file = req.file;
 
     file.size =
         file.size < 1000
@@ -74,7 +74,8 @@ const addFilePost = [
 
 const downloadFileGet = async (req, res) => {
     let { fileId } = req.params;
-    let file = await dbFile.get(fileId);
+
+    let file = req.file;
 
     const { data: blob } = await sb.download(
         file.owner.username,
@@ -91,7 +92,7 @@ const downloadFileGet = async (req, res) => {
 const deleteFilePost = async (req, res) => {
     let { fileId, folderId } = req.params;
 
-    let file = await dbFile.get(fileId);
+    let file = req.file;
 
     if (file.owner.id === req.user.id) {
         await dbFile.remove(fileId, req.user.id);
@@ -104,9 +105,10 @@ const deleteFilePost = async (req, res) => {
 };
 
 const shareFileGet = async (req, res) => {
-    let { folderId, fileId } = req.params;
+    let { folderId } = req.params;
 
-    let file = await dbFile.get(fileId);
+    let file = req.file;
+
     if (file.owner.id !== req.user.id) {
         console.log(
             `${req.user.username} is trying to share another user's file.`

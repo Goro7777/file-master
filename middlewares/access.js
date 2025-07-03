@@ -44,6 +44,7 @@ const checkFile = async (req, res, next) => {
             message: "404 Not Found: You do not have such a file.",
         });
     }
+    req.file = file;
 
     return next();
 };

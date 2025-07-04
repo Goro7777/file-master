@@ -80,9 +80,7 @@ const signupPost = [
     },
 ];
 
-const profileGet = async (req, res) => {
-    res.render("pages/profile");
-};
+const profileGet = async (req, res) => res.render("pages/profile");
 
 module.exports = {
     loginGet,
